@@ -1,0 +1,23 @@
+[
+ {
+  "align_labels_right": 0,
+  "css": null,
+  "custom_format": 0,
+  "default_print_language": null,
+  "disabled": 0,
+  "doc_type": "Project Offer",
+  "docstatus": 0,
+  "doctype": "Print Format",
+  "font": "Default",
+  "format_data": "[{\"fieldname\": \"print_heading_template\", \"options\": \"<div class=\\\"print-heading\\\">\\t\\t\\t\\t<h2>Project Offer<br><small>{{ doc.name }}</small>\\t\\t\\t\\t</h2></div>\", \"fieldtype\": \"Custom HTML\"}, {\"fieldtype\": \"Section Break\", \"label\": \"OFFER\"}, {\"fieldtype\": \"Column Break\"}, {\"fieldname\": \"offer_grounds_and_parameters_of_house\", \"print_hide\": 0, \"label\": \"Offer grounds and parameters of house\"}, {\"fieldname\": \"_custom_html\", \"print_hide\": 0, \"options\": \"<h2>{{doc.heading_of_offer_grounds}}</h2>\\n<h6>{{doc.intro_text_offer_grounds}}</h6>\", \"label\": \"Custom HTML\", \"fieldtype\": \"HTML\"}, {\"fieldtype\": \"Section Break\", \"label\": \"\"}, {\"fieldtype\": \"Column Break\"}, {\"fieldname\": \"_custom_html\", \"print_hide\": 0, \"options\": \"<table>\\n<tr>\\n<td>{{doc.total_house_area_label}}</td>\\n<td>{{doc.total_house_area_uom}}</td>\\n<td>{{doc.total_house_area}}</td>\\n<td>{{doc.house_living_area_label}}</td>\\n<td>{{doc.house_living_area_uom}}</td>\\n<td>{{doc.house_living}}</td>\\n<td>{{doc.height_label}}</td>\\n<td>{{doc.height_uom}}</td>\\n<td>{{doc.height}}</td>\\n</tr>\\n<tr>\\n<td>{{doc.total_1st_floor_label}}</td>\\n<td>{{doc.total_1st_floor_uom}}</td>\\n<td>{{doc.total_1st_floor}}</td>\\n\\n<td>{{doc.st1_floor_living_area_label}}</td>\\n<td>{{doc.st1_floor_living_area_uom}}</td>\\n<td>{{doc.st1_floor_living_area}}</td>\\n\\n<td>{{doc.st1_floor_height_label}}</td>\\n<td>{{doc.st1_floor_height_uom}}</td>\\n<td>{{doc.st1_floor_height}}</td>\\n</tr>\\n<tr>\\n\\n<td>{{doc.total_2st_floor_label}}</td>\\n<td>{{doc.total_2st_floor_uom}}</td>\\n<td>{{doc.total_2st_floor}}</td>\\n\\n<td>{{doc.st2_floor_living_area_label}}</td>\\n<td>{{doc.st2_floor_living_area_uom}}</td>\\n<td>{{doc.st2_floor_living_area}}</td>\\n\\n<td>{{doc.nd2_floor_height_label}}</td>\\n<td>{{doc.nd2_floor_height_uom}}</td>\\n<td>{{doc.nd2_floor_height}}</td>\\n</tr>\\n\\n<tr>\\n<td>{{doc.shed_area_label}}</td>\\n<td>{{doc.shed_area_uom}}</td>\\n<td>{{doc.shed_area}}</td>\\n\\n<td>{{doc.terrace_area_label}}</td>\\n<td>{{doc.terrace_area_uom}}</td>\\n<td>{{doc.terrace_area}}</td>\\n\\n<td>{{doc.balcony_area_label}}</td>\\n<td>{{doc.balcony_area_uom}}</td>\\n<td>{{doc.balcony_area}}</td>\\n</tr>\\n\\n</table>\", \"label\": \"Custom HTML\", \"fieldtype\": \"HTML\"}, {\"fieldtype\": \"Section Break\", \"label\": \"Offer\"}, {\"fieldtype\": \"Column Break\"}, {\"fieldname\": \"_custom_html\", \"print_hide\": 0, \"options\": \"<h2>{{doc.heading_of_includes_in_the_offer}}</h2>\", \"label\": \"Custom HTML\", \"fieldtype\": \"HTML\"}, {\"fieldname\": \"project_offer_description_details\", \"print_hide\": 0, \"visible_columns\": [{\"fieldname\": \"category\", \"print_hide\": 0, \"print_width\": \"\"}, {\"fieldname\": \"detail\", \"print_hide\": 0, \"print_width\": \"\"}, {\"fieldname\": \"show\", \"print_hide\": 0, \"print_width\": \"\"}, {\"fieldname\": \"type\", \"print_hide\": 0, \"print_width\": \"\"}], \"label\": \"Project Offer Description Details\"}]",
+  "html": null,
+  "line_breaks": 0,
+  "modified": "2018-07-09 14:14:51.499276",
+  "module": "Custom Manufacturing",
+  "name": "Project Offer",
+  "print_format_builder": 1,
+  "print_format_type": "Server",
+  "show_section_headings": 0,
+  "standard": "No"
+ }
+]
