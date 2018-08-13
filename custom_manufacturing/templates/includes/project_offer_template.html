@@ -148,8 +148,8 @@
 						
 			<div class="row" style="">
 				<div class="col-xs-12" style="">
-					<div class="first-page-top-picture"> <!-- <img src="/files/tivo_piedavajums.png" data-filename="tivo_piedavajums.png" ><br> -->
-						<img src={{ doc.first_page_top_image }} class="img-responsive center-block">
+					<div class="first-page-top-picture"> 
+					<img src={{ doc.first_page_top_image }} class="img-responsive center-block">
 					</div>
 				</div>
 			</div>
@@ -728,7 +728,7 @@
 
 						{{ increment(page_counter, 'group_amount_in_current_page') }} <!--count current groups sequence in page (from 1 to 4)-->
 											
-						{% if (group.grouper+1) is divisibleby(2) %} <!-- start new row if pdf_location+1 divides by 2-->
+						{% if (group.grouper|int+1) is divisibleby(2) %} <!-- start new row if pdf_location+1 divides by 2-->
 							<div class="row " style="margin-top:20px;">
 						{% endif %}
 						
@@ -751,10 +751,10 @@
 						
 						
 						
-						{% if (group.grouper) is divisibleby(2) %} <!-- end new row; if pdf_location divides by 2-->
+						{% if (group.grouper|int) is divisibleby(2) %} <!-- end new row; if pdf_location divides by 2-->
 							{% if page_counter.update({'last_row_not_closed': 0}) %} {% endif %}	
 							</div>
-							{% if (group.grouper) is not divisibleby(4) %} <!-- show pages' central image (only after first row) -->							
+							{% if (group.grouper|int) is not divisibleby(4) %} <!-- show pages' central image (only after first row) -->							
 								{% if page_counter.current_image %}															
 									<div class="row" style="max-height:17cm;overflow:hidden;">
 										<div class="col-xs-12" style=""> 
@@ -768,7 +768,7 @@
 							{% if page_counter.update({'last_row_not_closed': 1}) %} {% endif %}																				
 						{% endif %}
 
-			{% if (group.grouper|int +3) is divisibleby(4) %}	 <!-- close the page; end if was new page (pdf_location divides by 4)-->		
+			{% if (group.grouper|int) is divisibleby(4) %}	 <!-- close the page; end if was new page (pdf_location divides by 4)-->		
 					</div>
 				</section>
 				{% if page_counter.update({'last_page_not_closed': 0}) %}{%- endif %} <!-- set that page is closed -->
@@ -829,7 +829,7 @@
 			{% if group.grouper == 0 %} <!-- filter by unnumbered=> if is unnumbered pdf_location (equal to 0)-->
 				{{ increment(counter_unnumbered, 'item_no') }}
 				
-				{% if (counter_unnumbered.item_no + 1) is divisibleby(2) %} <!-- start new row if odd-->
+				{% if (counter_unnumbered.item_no|int + 1) is divisibleby(2) %} <!-- start new row if odd-->
 					<div class="row " style="margin-top:20px;">
 				{% else %}
 				{% endif %}
@@ -853,7 +853,7 @@
 				</div>
 				
 				
-				{% if (counter_unnumbered.item_no) is divisibleby(2) %} <!-- end  row if even group -->
+				{% if (counter_unnumbered.item_no|int) is divisibleby(2) %} <!-- end  row if even group -->
 					</div>
 					{% if counter_unnumbered.update({'last_row_not_closed': 0}) %} {% endif %}	
 				{% else %}	
