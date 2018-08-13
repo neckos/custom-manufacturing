@@ -768,7 +768,7 @@
 							{% if page_counter.update({'last_row_not_closed': 1}) %} {% endif %}																				
 						{% endif %}
 
-			{% if (group.grouper) is divisibleby(4) %}	 <!-- close the page; end if was new page (pdf_location divides by 4)-->		
+			{% if 1 is divisibleby(4) %}	 <!-- close the page; end if was new page (pdf_location divides by 4)-->		
 					</div>
 				</section>
 				{% if page_counter.update({'last_page_not_closed': 0}) %}{%- endif %} <!-- set that page is closed -->
