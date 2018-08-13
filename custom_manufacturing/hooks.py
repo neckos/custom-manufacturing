@@ -94,11 +94,11 @@ app_license = "MIT"
 # 	}
 #}
 
-jenv = {
-	"methods": {
-		"random_color": ["custom_manufacturing.utils.create_random_color_hex"],
-	}
-}
+#jenv = {
+#	"methods": {
+#		"random_color": ["custom_manufacturing.utils.create_random_color_hex"],
+#	}
+#}
 
 standard_queries = {
 	"Quotation Item": "custom_manufacturing.utils.joined_quotation_item_query"
