@@ -547,52 +547,55 @@
 		</div>-->
 		
 	</section>		
-			
-	<!--<div class="new-page"></div>-->
-	<section class="pg" style="page-break-before: always !important;">
-		<div class="container-fluid" style="">
+	
+	{% if doc.offer_drawings_page_1_image_1 or doc.offer_drawings_page_1_image_2%}
+		<!--<div class="new-page"></div>-->
+		<section class="pg" style="page-break-before: always !important;">
+			<div class="container-fluid" style="">
 	
 			
-			<div class="row " style="page-break-before: always !important;">
-				<div class="col-xs-12 offers-drawings-page-header">
-					<div class="text-center" style=""> 
-						<p class="third-page-header-text">{{ _(doc.offers_drawings_heading_text) }}</p>
+				<div class="row " style="page-break-before: always !important;">
+					<div class="col-xs-12 offers-drawings-page-header">
+						<div class="text-center" style=""> 
+							<p class="third-page-header-text">{{ _(doc.offers_drawings_heading_text) }}</p>
+						</div>
 					</div>
 				</div>
-			</div>
 			
-			{% if doc.offer_drawings_page_1_image_1 %}
-				<div class="row" style="max-height:23cm;overflow:hidden;">
-					<div class="col-xs-12" style=""> 
-						 	<img style="max-height:23cm" src={{ doc.offer_drawings_page_1_image_1 }} class="img-responsive center-block">
+				{% if doc.offer_drawings_page_1_image_1 %}
+					<div class="row" style="max-height:23cm;overflow:hidden;">
+						<div class="col-xs-12" style=""> 
+							 	<img style="max-height:23cm" src={{ doc.offer_drawings_page_1_image_1 }} class="img-responsive center-block">
+						</div>
 					</div>
-				</div>
-			{%- endif %}
-			{% if doc.offer_drawings_page_1_image_2 %}
-				<div class="row " style="max-height:23cm;overflow:hidden;">
-					<div class="col-xs-12" style=""> 
-						 <img style="max-height:23cm" src={{ doc.offer_drawings_page_1_image_2 }} class="img-responsive center-block">
+				{%- endif %}
+				{% if doc.offer_drawings_page_1_image_2 %}
+					<div class="row " style="max-height:23cm;overflow:hidden;">
+						<div class="col-xs-12" style=""> 
+							 <img style="max-height:23cm" src={{ doc.offer_drawings_page_1_image_2 }} class="img-responsive center-block">
+						</div>
 					</div>
-				</div>
-			{%- endif %}
-		</div>
-		<!--
-		<div class="container-fluid" style="">
-			{% if doc.footer %}
-			<div class="row" style="position:absolute; bottom:20px;width:100%;"> 
-				<div class="col-xs-12 text-center" style=""> 
-					<div class="text-center" style=""> 
-					 	<span style=""> {{ _(doc.footer) }}</span>
-				 	</div>
-				</div>
+				{%- endif %}
 			</div>
-			{% endif %}
-		</div>-->
+			<!--
+			<div class="container-fluid" style="">
+				{% if doc.footer %}
+				<div class="row" style="position:absolute; bottom:20px;width:100%;"> 
+					<div class="col-xs-12 text-center" style=""> 
+						<div class="text-center" style=""> 
+						 	<span style=""> {{ _(doc.footer) }}</span>
+					 	</div>
+					</div>
+				</div>
+				{% endif %}
+			</div>-->
 		
-	</section>
+		</section>
+	{%- endif %}
 	<!-- backgroun-image not working in wkhtmltopdf ???-->
 	                   	<!--<div style="width: 600px; height: 600px;background-image: url(https://cdn.pixabay.com/photo/2018/07/08/14/16/cat-3523992_1280.jpg)"></div> -->
 	
+	{% if doc.offer_drawings_page_2_image_1 or doc.offer_drawings_page_2_image_1%}
 	<section class="pg" style="">
 		<div class="container-fluid" style="">
 			{% if doc.offer_drawings_page_2_image_1 %}
@@ -622,40 +625,42 @@
 			</div>
 			{% endif %}
 		</div>-->
+	{%- endif %}
 		
 	</section>
-	
-	<section class="pg" style="">
-		<div class="container-fluid" style="">
-			{% if doc.offer_drawings_page_3_image_1 %}
-				<div class="row" style="max-height:23cm;overflow:hidden;">
-					<div class="col-xs-12" style=""> 
-						 	<img style="max-height:23cm" src={{ doc.offer_drawings_page_3_image_1 }} class="img-responsive center-block">
+	{% if doc.offer_drawings_page_3_image_1 or doc.offer_drawings_page_3_image_2%}
+		<section class="pg" style="">
+			<div class="container-fluid" style="">
+				{% if doc.offer_drawings_page_3_image_1 %}
+					<div class="row" style="max-height:23cm;overflow:hidden;">
+						<div class="col-xs-12" style=""> 
+							 	<img style="max-height:23cm" src={{ doc.offer_drawings_page_3_image_1 }} class="img-responsive center-block">
+						</div>
 					</div>
-				</div>
-			{%- endif %}
-			{% if doc.offer_drawings_page_3_image_2 %}
-				<div class="row " style="max-height:23cm;overflow:hidden;">
-					<div class="col-xs-12" style=""> 
-						 <img style="max-height:23cm" src={{ doc.offer_drawings_page_3_image_2 }} class="img-responsive center-block">
+				{%- endif %}
+				{% if doc.offer_drawings_page_3_image_2 %}
+					<div class="row " style="max-height:23cm;overflow:hidden;">
+						<div class="col-xs-12" style=""> 
+							 <img style="max-height:23cm" src={{ doc.offer_drawings_page_3_image_2 }} class="img-responsive center-block">
+						</div>
 					</div>
-				</div>
-			{%- endif %}
-		</div>
-		<!--
-		<div class="container-fluid" style="">
-			{% if doc.footer %}
-			<div class="row" style="position:absolute; bottom:20px;width:100%;"> 
-				<div class="col-xs-12 text-center" style=""> 
-					<div class="text-center" style=""> 
-					 	<span style=""> {{ _(doc.footer) }}</span>
-				 	</div>
-				</div>
+				{%- endif %}
 			</div>
-			{% endif %}
-		</div>-->
+			<!--
+			<div class="container-fluid" style="">
+				{% if doc.footer %}
+				<div class="row" style="position:absolute; bottom:20px;width:100%;"> 
+					<div class="col-xs-12 text-center" style=""> 
+						<div class="text-center" style=""> 
+						 	<span style=""> {{ _(doc.footer) }}</span>
+					 	</div>
+					</div>
+				</div>
+				{% endif %}
+			</div>-->
 		
-	</section>
+		</section>
+	{%- endif %}
 	
 	
 	
