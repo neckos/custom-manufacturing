@@ -3,6 +3,12 @@ from frappe import _
 from frappe.utils.csvutils import getlink
 from six import string_types
 import json
+import random
+
+@frappe.whitelist()
+def create_random_color_hex():
+    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
+
 
 @frappe.whitelist()
 def create_work_order_tasks2():

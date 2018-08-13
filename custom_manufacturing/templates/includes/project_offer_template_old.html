@@ -1,0 +1,293 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ title }}</title>
+	<meta name="generator" content="frappe">
+	<link type="text/css" rel="stylesheet"
+        href="/assets/frappe/css/bootstrap.css">
+	<link type="text/css" rel="stylesheet"
+        href="/assets/frappe/css/font-awesome.css">
+	{%- if has_rtl -%}
+		<link type="text/css" rel="stylesheet" href="assets/css/frappe-rtl.css">
+	{%- endif -%}
+	<style>
+	    html,
+	       body {
+	         margin: 0;
+	         padding: 0;
+	         text-rendering: optimizeLegibility;
+	       }
+    .new-page {
+        page-break-before: always;
+    }	
+	.i-am-centered { margin: auto;max-width:100%;}
+	.co-bcg0{
+		/*background-color:LightGray;	*/
+	}
+	.co-bcg{ /* color background*/
+		/*background-color:LightBlue ;	*/	
+	}
+	.co-bcg2{ 
+		/*border:1px solid black;background-color:#FFE4C4;*/
+	}
+	.agent-container, .customer-container{
+		/*background-color:red ;*/
+		padding:10px 0 10px 0;	
+		padding-left:50px;
+		text-size:4em;
+		border-style:double none double none;		
+	}
+	.letter-head-footer {
+		/*margin-top: 15mm !important;*/
+		position: fixed; bottom:100px;
+		width: 100%;
+	}
+	.project-manager-footer{
+		background-color:DodgerBlue;
+		color:white;
+		margin:0 30px 100px 20px;
+		text-size:0.7em;
+	}
+	.first-page-top-picture{
+		/*margin:0 0 0 0; can not push to left?*/
+	}
+	.number-date-section{
+		position: fixed;
+		right:10%;
+		top:200px;
+	}
+    div.actualpage {
+     height: 297mm; /* DIN A4 standard paper size */
+     width: 210mm;
+    }
+	.pg{
+        /*width: 28cm; height: 39.6cm;*/
+        position: relative;
+        page-break-after: always;
+        margin: 0;
+        padding: 0;
+        width: 32.9cm;
+        height: 46.4cm;
+        overflow: hidden;
+        background-color: green;
+	}
+    div.page {
+     margin: 0 0 0 0;
+    }
+	.second-page-background{
+		width:210mm;
+		/*height:170%;
+		margin-bottom:20px;*/
+	}
+	.container{
+
+		
+	}
+</style>
+</head>
+<body>
+
+
+<!--<div class="container co-bcg0" style= "">-->
+	<!-- Idea to use actaulpage and page wrappers for borderless printing? https://stackoverflow.com/questions/13154147/how-to-set-safari-print-margins-via-css-to-print-borderless#34018790 -->
+	<!--<div class="actualpage">
+		<div class="page"> -->
+		<section class="pg">
+			<div class="container-fluid" style="background-color:red;">
+				<div class="row" style="background-color:blue;">
+					<div class="col-xs-12" style="background-color:yellow;">
+						<img style="" src={{ doc.second_page_background_image }} class="img-responsive center-block">
+					</div>
+				</div>
+				
+			</div>
+		</section>
+		<section class="pg"><div class="container-fluid"></div></section>
+		<section class="pg"><div class="container-fluid"></div></section>
+		
+		
+		<div class="new-page"></div>
+			<div class="container co-bcg0" style= "">
+			<div class="first-page-top-picture"><img src="/files/tivo_piedavajums.png" data-filename="tivo_piedavajums.png" ><br></div> <!--style="position: fixed;left:0;"-->
+			
+			<div class="row number-date-section" style="">
+				<div class="col-xs-6  column-break">
+					<h5>{{ _("No: ") }} {{ doc.document_no }} </h5>
+					<h5>{{ _("Date: ") }} {{ doc.document_date }} </h5>
+				</div>
+			</div>
+	  
+			<div class="row" style="width:100%;"> <!-- margin-left:20px;margin-top:20px; style="border-top:2px solid double;"-->
+				<div class="col-xs-6  column-break">
+					<div class="text-left co-bcg agent-container" > 
+						<p>{{ doc.agent_full_name }}</p>
+						<p>{{ doc.agent_phone }}</p>
+						<p>{{ doc.agent_email }}</p>
+						<p>{{ doc.agent_city_country }}</p>
+					</div>
+				</div>
+				<div class="col-xs-6  column-break customer-container">
+					<div class="text-left co-bcg" style=""> 
+						<p>{{ doc.customer_full_name }}</p>
+						<p>{{ doc.customer_phone }}</p>
+						<p>{{ doc.customer_email }}</p>
+						<p>{{ doc.customer_address }}</p>
+					</div>
+				</div>
+			</div>
+			<div class="row co-bcg2" style=""> 
+				<div class="text-center" style=""> 
+					 <h1> {{ doc.project_offer_title }} </h1>
+					 <h3> {{ doc.project_offer_subtitle }} </h3>
+				</div>
+				<!--
+				<div class="col-xs-6 center-block" style="float:none;background-color:LightBlue ;"> 
+					 <h1> {{ doc.project_offer_title }} </h1>
+					 <h3> {{ doc.project_offer_subtitle }} </h3>
+				</div>
+				-->	
+				<div class="col-xs-12 center-block" style="float:none"> 
+					 <img src={{ doc.first_page_image }} class="img-responsive center-block">
+				</div>
+				<div class="text-center" style=""> 
+					 <h2> {{ doc.title_below_image }} </h2>
+					 <h1> {{ doc.subtitle_below_image }} </h1>
+				</div>
+		 	 
+			</div>
+			<div class="row" style=""> <!-- margin-left:20px;margin-top:20px;-->
+				<div class="col-xs-6  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>______________________</h3>
+						<p>{{ doc.authorized_signatory_customer_label }}</p>
+					</div>
+				</div>
+				<div class="col-xs-6  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>______________________</h3>
+						<p>{{ doc.authorized_signatory_label }}</p>
+					</div>
+				</div>
+			</div>
+			<!--
+			<div class="row" style="">
+				{% if doc.footer %}
+					<div class="text-center letter-head-footer" style="">
+							{{ doc.footer }}
+					</div>
+				{% endif %}
+			</div>
+			-->
+			<!--
+			<div class="row co-bcg2" style=""> 
+				<div class="text-center letter-head-footer" style=""> 
+					 <h5> {{ doc.footer }}</h5>
+				</div>
+			</div>
+			-->
+			<div class="row project-manager-footer" style=""> <!-- margin-left:20px;margin-top:20px;-->
+				<div class="col-xs-6  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>{{ doc.project_manager_label }} {{ doc.project_manager_full_name }}</h3>
+					</div>
+				</div>
+				<div class="col-xs-3  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>{{ doc.project_manager_phone }}</h3>
+					</div>
+				</div>
+				<div class="col-xs-3  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>{{ doc.project_manager_email }}</h3>
+					</div>
+				</div>
+			</div>
+			
+		<!--</div>-->
+	<!--		
+		</div>
+	</div>
+		-->
+	<!--<div class="page-break">-->
+	<!--<div style="float: none;"><div style="page-break-after: always;"></div></div> style = "position:fixed;top:0;left0;"-->
+	<div class="new-page"></div>
+	<!-- <div class="actualpage">
+		<div class="page">-->
+		<!--<div class="container co-bcg0" style= "">-->
+			<div class="row" style="background-color:LightBlue; height:1500px;width:100%">
+				<div class="col-xs-12" style="height:1500px;width:100%"> 
+					<img style="height:1500px;width:100%" src={{ doc.second_page_background_image }} class="img-responsive center-block second-page-background">
+				</div>
+			</div>
+			<!--
+			<div class="row co-bcg2" style=""> 
+				<div class="text-center letter-head-footer" style=""> 
+					 <h5> {{ doc.footer }}</h5>
+				</div>
+			</div>
+			-->
+			<div class="row project-manager-footer" style=""> <!-- margin-left:20px;margin-top:20px;-->
+				<div class="col-xs-6  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>{{ doc.project_manager_label }} {{ doc.project_manager_full_name }}</h3>
+					</div>
+				</div>
+				<div class="col-xs-3  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>{{ doc.project_manager_phone }}</h3>
+					</div>
+				</div>
+				<div class="col-xs-3  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>{{ doc.project_manager_email }}</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+			<!--</div>
+	</div>-->
+	<div class="new-page"></div>
+	
+	<br>
+	<div style="margin-left:20px;">
+		<table class="table" class="margin">
+			<tbody>
+				<tr>
+					<th>Sr</th>
+					<th>Category</th>
+					<th>Detail</th>
+					<th class="text-right">Type</th>
+				</tr>
+				{%- for row in doc.project_offer_description_details -%}
+				{% if row.show %}
+				<tr>
+					<td style="width: 3%;">{{ row.idx }}</td>
+					<td style="width: 20%;">{{ row.category }}</td>
+					<td style="width: 20%;">{{ row.detail }}</td>
+					<td style="width: 20%;">{{ row.type }}</td>
+				</tr>
+				{%- endif %}
+				{%- endfor -%}
+			</tbody>
+		</table>
+	</div>
+	<!-- </div> -->
+	
+
+
+<!-- </div> -->
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const page_div = document.querySelector('.page-break');
+			page_div.style.display = 'flex';
+			page_div.style.flexDirection = 'column';
+			const footer_html = document.getElementById('footer-html');
+			footer_html.classList.add('hidden-pdf');
+			footer_html.classList.remove('visible-pdf');
+			footer_html.style.order = 1;
+			footer_html.style.marginTop = '20px';
+		});
+	</script>
+<body>
+</html>

@@ -1,0 +1,1222 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ title }}</title>
+	<meta name="generator" content="frappe">
+	<link type="text/css" rel="stylesheet"
+        href="/assets/frappe/css/bootstrap.css">
+	<link type="text/css" rel="stylesheet"
+        href="/assets/frappe/css/font-awesome.css">
+	{%- if has_rtl -%}
+		<link type="text/css" rel="stylesheet" href="assets/css/frappe-rtl.css">
+	{%- endif -%}
+	<style>
+	/*
+	project manager footer and offer description header has its width because of heading (h3) element
+	
+	*/
+	html,
+	body {
+		margin: 0;
+		padding: 0;
+		text-rendering: optimizeLegibility;
+	}
+    .new-page {
+        page-break-before: always;
+    }	
+	.i-am-centered { margin: auto;max-width:100%;}
+	.co-bcg0{
+		/*background-color:LightGray;	*/
+	}
+	.co-bcg{ /* color background*/
+		/*background-color:LightBlue ;	*/	
+	}
+	.co-bcg2{ 
+		/*border:1px solid black;background-color:#FFE4C4;*/
+	}
+	.agent-container, .customer-container{
+		/*background-color:red ;*/
+		padding:10px 0 10px 0;	
+		padding-left:50px;
+		text-size:4em;
+		border-style:double none double none;		
+	}
+	.letter-head-footer {
+		/*margin-top: 15mm !important;*/
+		position: fixed; bottom:100px;
+		width: 100%;
+	}
+	.project-manager-footer{
+		position:absolute;  
+		bottom:70px;
+		width:100%;
+		background-color:DodgerBlue;
+		color:white;
+		/*margin:0 30px 100px 20px;*/
+		/*border:1px solid black;*/
+		/*margin:0px 0px 100px 0px;*/
+		/*padding:0 300px 0 100px;*/
+		text-size:0.7em;
+	}
+	.third-page-header{
+		background-color:DodgerBlue;
+		margin:50px 0 0 0;
+	}
+	.offers-drawings-page-header{
+ 		background-color:DodgerBlue;
+ 		margin:50px 0 0 0;	 	
+	 }
+	.third-page-header-text{
+		color:white;
+		font-size: 200%;
+		font-weight:bold;
+		padding-top:20px;
+	}
+	.first-page-top-picture{
+		margin-left:-3px;
+	}
+	.number-date-section{
+		position: fixed;
+		right:10%;
+		top:200px;
+	}
+    div.actualpage {
+     height: 297mm; /* DIN A4 standard paper size */
+     width: 210mm;
+    }
+	.pg{
+        /*width: 28cm; height: 39.6cm;*/
+		/*margin-top:-20mm;*/
+        position: relative;
+        /*page-break-after: always !important;*/
+        /*margin-bottom: 0;*/
+        /*padding: 15mm 0 5mm !important;*/
+        width: 32.9cm; /* FIX NEEDED - WHY HAVE TO PUT SO BIG VALUES (NOT A4!)*/
+        height: 45.1cm; /* 46.4*/
+        /*overflow: hidden;*/
+        /*background-color: green;*/
+	}
+	.pg-multiple{
+        /*width: 28cm; height: 39.6cm;*/
+        position: relative;
+        /*page-break-after: always !important;*/
+        margin: 0;
+        padding: 0;
+        /*width: 32.9cm; */ /* FIX NEEDED - WHY HAVE TO PUT SO BIG VALUES (NOT A4!)*/
+        /*height: 46.4cm;*/
+        /*overflow: hidden;*/
+        /*background-color: green;*/
+	}
+    div.page {
+     margin: 0 0 0 0;
+    }
+	.second-page-background{
+		width:210mm;
+		/*height:170%;
+		margin-bottom:20px;*/
+	}
+	.text-editor{
+		 /*page-break-inside:avoid; page-break-after:auto ; */
+	}
+	/* this will not allow to break in middle of table...
+	table, tr, td, th, tbody, thead, tfoot {
+	    page-break-inside: avoid !important;
+	}
+	*/
+	/*
+    table { page-break-inside:auto }
+    tr    { page-break-inside:avoid; page-break-after:auto }
+    thead { display:table-header-group }
+    tfoot { display:table-footer-group }
+	*/
+	.technical-offer td{
+		padding:5px 0 5px 0;
+	}
+	.technical-offer th {
+		padding:10px 0 10px 0;
+	}
+</style>
+</head>
+<body>
+	{% macro increment(counter, key, inc=1)%}
+	    {% if counter.update({key: counter[key] + inc}) %} {% endif %}
+	{% endmacro %}
+	
+	<section class="pg" style="">
+		<div class="container-fluid" style="">
+						
+			<div class="row" style="">
+				<div class="col-xs-12" style="">
+					<div class="first-page-top-picture"><img src="/files/tivo_piedavajums.png" data-filename="tivo_piedavajums.png" ><br></div>
+				</div>
+			</div>
+			
+			<div class="row number-date-section" style="">
+				<div class="col-xs-6  column-break">
+					<h5>{{ _("No: ") }} {{ doc.document_no }} </h5>
+					<h5>{{ _("Date: ") }} {{ doc.document_date }} </h5>
+				</div>
+			</div>
+  
+			<div class="row" style="">
+				<div class="col-xs-6  column-break">
+					{% if doc.agent %}
+					<div class="text-left co-bcg agent-container" > 
+						<p>{{ _(doc.agent_label) }}: {{ doc.agent_full_name }}</p>
+						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.phone_icon) }} {{ doc.agent_phone }}</p>
+						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.email_icon) }} {{ doc.agent_email }}</p>
+						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.address_icon) }} {{ doc.agent_city_country }}</p>
+					</div>
+					{% endif %}
+				</div>
+				<div class="col-xs-6  column-break customer-container">
+					<div class="text-left co-bcg" style=""> 
+						<p>{{ _(doc.customer_label) }}: {{ doc.customer_full_name }}</p>
+						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.phone_icon) }} {{ doc.customer_phone }}</p>
+						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.email_icon) }} {{ doc.customer_email }}</p>
+						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.address_icon) }} {{ doc.customer_address }}</p>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row co-bcg2" style=""> 
+				<div class="text-center" style=""> 
+					 <h1> {{ _(doc.project_offer_title) }} </h1>
+					 <h3> {{ _(doc.project_offer_subtitle) }} </h3>
+				</div>
+				
+				<div class="col-xs-12 center-block" style="float:none;padding-bottom:50px;"> 
+					 <img src={{ doc.first_page_image }} class="img-responsive center-block">
+				</div>
+				<div class="text-center" style=""> 
+					 <h2> {{ _(doc.title_below_image) }} </h2>
+					 <h1> {{ _(doc.subtitle_below_image) }} </h1>
+				</div>		 	 
+			</div>
+			
+			<div class="row" style="padding-top:50px;">
+				<div class="col-xs-6  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>______________________</h3>
+						<p>{{ _(doc.authorized_signatory_customer_label) }}</p>
+					</div>
+				</div>
+				<div class="col-xs-6  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>______________________</h3>
+						<p>{{ _(doc.authorized_signatory_label) }}</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="row project-manager-footer" style=""> <!-- FIX - NOT CENTERED!?-->
+				<div class="col-xs-6  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>{{ _(doc.project_manager_label) }} {{ _(doc.project_manager_full_name) }}</h3>
+					</div>
+				</div>
+				<div class="col-xs-3  column-break">
+					<div class="text-left co-bcg" style=""> 
+						<h3>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.phone_icon) }} {{ _(doc.project_manager_phone) }}</h3>
+					</div>
+				</div>
+				<div class="col-xs-3  column-break">
+					<div class="text-left co-bcg" style=""> 
+						<h3> {{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.email_icon) }} {{ _(doc.project_manager_email) }}</h3>
+					</div>
+				</div>
+			</div>		
+		</div>
+		<!--
+		<div class="container-fluid" style="">
+			{% if doc.footer %}
+			<div class="row" style="position:absolute; bottom:20px;width:100%;"> 
+				<div class="col-xs-12 text-center" style=""> 
+					<div class="text-center" style=""> 
+					 	<span style=""> {{ _(doc.footer) }}</span>
+				 	</div>
+				</div>
+			</div>
+			{% endif %}
+		</div>
+		-->
+
+	</section>
+	
+	<section class="pg">
+		<div class="container-fluid" style="">
+			
+			<div class="row" style="">
+				<div class="col-xs-12" style="">
+					<img style="" src={{ doc.second_page_background_image }} class="img-responsive center-block">
+				</div>
+			</div>
+			
+			<div class="row" style="position:absolute;top:33%;left:35%;"> 
+				<div class="col-xs-12 center-block" style=""> 
+					 	<img width="400" height="400" style="" src={{ doc.second_page_central_image }} class="img-responsive ">
+				</div>
+			</div>
+			
+			<div class="row " style="position:absolute;  top:50px; left:5%;">
+				<div class="col-xs-12">
+					<img width="300" height="300" style="" src={{ doc.company_logo_image }} class="img-responsive center-block">
+				</div>
+			</div>
+			
+			<div class="row " style="position:absolute;  top:50px; right:5%;">
+				<div class="col-xs-6  column-break">
+					<img width="150" height="150" style="" src={{ doc.experience_logo_image }} class="img-responsive center-block">
+				</div>
+				<div class="col-xs-6  column-break">
+					<img width="150" height="150" style="" src={{ doc.qr_code_image}} class="img-responsive center-block">
+				</div>
+			</div>
+			
+			<div class="row" style="position:absolute;top:15%;left:5%;"> 
+				<div class="col-xs-4 center-block" style=""> 
+					 	<img width="600" max-height="400" style="" src={{ doc.statical_calculation_frame_image }} class="img-responsive ">
+				</div>
+				<div class="col-xs-3 center-block" style=""> 
+					 	<img width="400" max-height="400" style="" src={{ doc.energy_efficiency_certificate_frame_image }} class="img-responsive ">
+				</div>
+				<div class="col-xs-2 center-block" style=""> 
+					 	<img width="200" max-height="400" style="" src={{ doc.tolerance_frame_image }} class="img-responsive ">
+				</div>
+				<div class="col-xs-3 center-block" style=""> 
+				</div>
+			</div>
+			
+			<div class="row " style="position:absolute;  top:17%; left:19%;">
+				<div class="col-xs-12">
+					<span style="white-space: nowrap;">{{ _(doc.statical_calculation_text) }}</span>
+				</div>
+			</div>
+			<div class="row " style="position:absolute;  top:23%; left:19%;">
+				<div class="col-xs-12">
+					<img max-width="100" max-height="100" style="" src={{ doc.statical_calculations_frame_construction_norms_image }} class="img-responsive center-block">
+				</div>
+			</div>
+			<div class="row " style="position:absolute;  top:24%; left:24%;">
+				<div class="col-xs-12">
+					<span style="white-space: nowrap;font-size:0.8em;">{{ _(doc.statical_calculations_frame_construction_norms_text) }}</span>
+				</div>
+			</div>
+			<div class="row " style="position:absolute;  top:16%; left:47%;">
+				<div class="col-xs-12">
+					<span style="font-size:0.8em; width:100px;color:white;">{{ _(doc.energy_efficiency_certificate_text) }}</span>
+				</div>
+			</div>
+			<div class="row " style="position:absolute;  top:16%; left:64%; max-width:142px;">
+				<div class="col-xs-12">
+					<img max-width="50" max-height="50" style="" src={{ doc.tolerance_qr_code }} class="img-responsive center-block">
+				</div>
+			</div>
+			<div class="row " style="position:absolute;  top:25%; left:64% ;max-width:150px;">
+				<div class="col-xs-12">
+					<span style="font-size:0.9em; color:black;max-width:150px;">{{ _(doc.tolerance_text) }} </span>
+				</div>
+			</div>
+			<div class="row " style="position:absolute;  top:23%; left:80%;max-width:200px;">
+				<div class="col-xs-12">
+					<span style="font-size:1.3em; color:black;max-width:200px;">{{ _(doc.certificate_label) }} </span>
+				</div>
+			</div>
+			<div class="row " style="position:absolute;top:86%; left:20%;">
+				<div class="col-xs-12">
+					<span style="font-size:2.5em; color:NavyBlue;">{{ _(doc.extra_options_label) }} </span>
+				</div>
+			</div>
+			
+			
+			<div class="row " style="position:absolute;  top:29%; left:5%;">
+				<div class="col-xs-12">
+					<img max-width="100" max-height="600" style="" src={{ doc.graphic_icons_left_image }} class="img-responsive center-block">
+				</div>
+			</div>
+			
+			<div class="row " style="position:absolute;  top:30%; right:5%;">
+				<div class="col-xs-12">
+					<img style="" src={{ doc.logos_right_image}} class="img-responsive center-block">
+				</div>
+			</div>
+			
+			<div class="row " style="position:absolute;  top:65%; left:18%;">
+				<div class="col-xs-12">
+					<img style="" src={{ doc.advertisement_1_image}} class="img-responsive center-block">
+				</div>
+			</div>
+			
+			<div class="row " style="position:absolute;  top:72%; right:17%;">
+				<div class="col-xs-12">
+					<img style="" src={{ doc.advertisement_2_image}} class="img-responsive center-block">
+				</div>
+			</div>
+			
+			
+			<div class="row project-manager-footer" style=""> <!-- FIX - NOT CENTERED!?-->
+				<div class="col-xs-6  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>{{ _(doc.project_manager_label) }} {{ _(doc.project_manager_full_name) }}</h3>
+					</div>
+				</div>
+				<div class="col-xs-3  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>{{ _(doc.project_manager_phone) }}</h3>
+					</div>
+				</div>
+				<div class="col-xs-3  column-break">
+					<div class="text-center co-bcg" style=""> 
+						<h3>{{ _(doc.project_manager_email) }}</h3>
+					</div>
+				</div>
+			</div>				
+		</div>
+		<!--
+		<div class="container-fluid" style="">
+			{% if doc.footer %}
+			<div class="row" style="position:absolute; bottom:20px;width:100%;"> 
+				<div class="col-xs-12 text-center" style=""> 
+					<div class="text-center" style=""> 
+					 	<span style=""> {{ _(doc.footer) }}</span>
+				 	</div>
+				</div>
+			</div>
+			{% endif %}
+		</div>-->
+	</section>
+	
+	
+	<section class="pg-multiple" style="background-color:white;">
+		<div class="container-fluid" style="">
+			<div class="row " style="">
+				<div class="col-xs-12 third-page-header">
+					<div class="text-center" style=""> 
+						<p class="third-page-header-text">{{ _(doc.page_3_header_text) }}</p>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row ">
+				<div class="col-xs-12"  style="background-color:pink; margin:50px 20px 20px 20px;">
+					<div class="text-left" style=""> 
+						<p style="font-weight:bold;font-size:150%;padding-top:10px;">{{ _(doc.heading_of_offer_grounds) }}</p>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row " style="">
+				<div class="col-xs-12">
+					<div class="text-left" style="padding-left:20px;"> 
+						<p class="" style="font-size:110%;">{{ _(doc.intro_text_offer_grounds) }}</p>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row " style="">
+				<div class="col-xs-12">
+					<table class="table" class="margin">
+						<tbody>
+							{% if doc.total_house_area or doc.house_living or doc.height %}
+							<tr>
+
+								<td style="width: 20%;text-align:right;font-weight:bold;">{{ _(doc.total_house_area_label) }}</td>
+								<td style="width: 5%;font-weight:bold;">{{ doc.total_house_area_uom }}</td>
+								<td style="width: 8%;font-weight:bold;">{{ doc.total_house_area }}</td>
+								<td style="width: 20%;font-weight:bold;">{{ _(doc.house_living_area_label) }}</td>
+								<td style="width: 5%;font-weight:bold;">{{ doc.house_living_area_uom }}</td>
+								<td style="width: 8%;font-weight:bold;">{{ doc.house_living }}</td>
+								<td style="width: 20%;font-weight:bold;">{{ _(doc.height_label) }}</td>
+								<td style="width: 5%;font-weight:bold;">{{ doc.height_uom }}</td>
+								<td style="width: 8%;font-weight:bold;">{{ doc.height }}</td>
+							</tr>
+							{% endif %}
+							{% if doc.total_1st_floor or doc.st1_floor_living_area or doc.st1_floor_height %}
+							<tr>
+								<td style="width: 20%;text-align:right;">{{ _(doc.total_1st_floor_label) }}</td>
+								<td style="width: 5%;">{{ doc.total_1st_floor_uom }}</td>
+								<td style="width: 8%;">{{ doc.total_1st_floor }}</td>
+								<td style="width: 20%">{{ _(doc.st1_floor_living_area_label) }}</td>
+								<td style="width: 5%;">{{ doc.st1_floor_living_area_uom }}</td>
+								<td style="width: 8%;">{{ doc.st1_floor_living_area }}</td>
+								<td style="width: 20%">{{ _(doc.st1_floor_height_label) }}</td>
+								<td style="width: 5%;">{{ doc.st1_floor_height_uom }}</td>
+								<td style="width: 8%;">{{ doc.st1_floor_height }}</td>
+							</tr>
+							{% endif %}
+							{% if doc.total_2st_floor or doc.st2_floor_living_area or doc.nd2_floor_height %}
+							<tr>
+								<td style="width: 20%;text-align:right;">{{ _(doc.total_2st_floor_label) }}</td>
+								<td style="width: 5%;">{{ doc.total_2st_floor_uom }}</td>
+								<td style="width: 8%;">{{ doc.total_2st_floor }}</td>
+								<td style="width: 20%">{{ _(doc.st2_floor_living_area_label) }}</td>
+								<td style="width: 5%;">{{ doc.st2_floor_living_area_uom }}</td>
+								<td style="width: 8%;">{{ doc.st2_floor_living_area }}</td>
+								<td style="width: 20%">{{ _(doc.nd2_floor_height_label) }}</td>
+								<td style="width: 5%;">{{ doc.nd2_floor_height_uom }}</td>
+								<td style="width: 8%;">{{ doc.nd2_floor_height }}</td>
+							</tr>
+							{% endif %}
+							{% if doc.shed_area or doc.terrace_area or doc.balcony_area %}
+							<tr>
+								<td style="width: 20%;text-align:right;">{{ _(doc.shed_area_label) }}</td>
+								<td style="width: 5%;">{{ doc.shed_area_uom }}</td>
+								<td style="width: 8%;">{{ doc.shed_area }}</td>
+								<td style="width: 20%">{{ _(doc.terrace_area_label) }}</td>
+								<td style="width: 5%;">{{ doc.terrace_area_uom }}</td>
+								<td style="width: 8%;">{{ doc.terrace_area }}</td>
+								<td style="width: 20%">{{ _(doc.balcony_area_label) }}</td>
+								<td style="width: 5%;">{{ doc.balcony_area_uom }}</td>
+								<td style="width: 8%;">{{ doc.balcony_area }}</td>
+							</tr>
+							{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			<div class="row " style="">
+				<div class="col-xs-12" style="background-color:pink; margin:50px 20px 50px 20px;">
+					<div class="text-left" style=""> 
+						<p class=""  style="font-weight:bold;font-size:150%;padding-top:10px;">{{ _(doc.project_offer_include_label) }}</p>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row" style=""> 
+				<div class="col-xs-12" style="width:90%;"> 
+					<table class="table" style="margin-left:20px;display:block;">
+						<thead>					
+							<tr>
+								<th></th>
+								<th class=""></th>
+							</tr>
+						</thead>
+						<tbody>
+							{%- for row in doc.project_offer_description_details -%}
+							{% if row.show %}
+							{% if row.category %}
+								<tr style="padding-bottom:20px;">
+							{% else %}
+								<tr>
+							{% endif %}	
+															
+								{% if row.category %}
+									<td style="width: 90%;background-color:LightGray;font-weight:bold;">{{ _(row.category) }}</td>
+									<td style="width: 10%;background-color:LightGray;"></td>
+								{% endif %}
+								{% if row.detail %}
+									<td style="width: 90%;">{{ _(row.detail) }}</td>
+									<td style="width: 10%;">
+										{% if row.type and row.type != _("Comment") %}
+											{{ _(row.type) }}	
+										{% endif %}
+									</td>
+								{% endif %}
+								{% if row.sub_detail %}
+									<td style="width: 90%;padding-left:50px;">{{ _(row.sub_detail) }}</td>
+									<td style="width: 10%;">
+										{% if row.type and row.type != _("Comment") %}
+											{{ _(row.type) }}	
+										{% endif %}
+									</td>
+								{% endif %}
+
+							</tr>
+							{%- endif %}
+							{%- endfor -%}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!--
+		<div class="container-fluid" style="">
+			{% if doc.footer %}
+			<div class="row" style="position:absolute; bottom:20px;width:100%;"> 
+				<div class="col-xs-12 text-center" style=""> 
+					<div class="text-center" style=""> 
+					 	<span style=""> {{ _(doc.footer) }}</span>
+				 	</div>
+				</div>
+			</div>
+			{% endif %}
+		</div>-->
+		
+	</section>		
+			
+	<!--<div class="new-page"></div>-->
+	<section class="pg" style="page-break-before: always !important;">
+		<div class="container-fluid" style="">
+	
+			
+			<div class="row " style="page-break-before: always !important;">
+				<div class="col-xs-12 offers-drawings-page-header">
+					<div class="text-center" style=""> 
+						<p class="third-page-header-text">{{ _(doc.offers_drawings_heading_text) }}</p>
+					</div>
+				</div>
+			</div>
+			
+			{% if doc.offer_drawings_page_1_image_1 %}
+				<div class="row" style="max-height:23cm;overflow:hidden;">
+					<div class="col-xs-12" style=""> 
+						 	<img style="max-height:23cm" src={{ doc.offer_drawings_page_1_image_1 }} class="img-responsive center-block">
+					</div>
+				</div>
+			{%- endif %}
+			{% if doc.offer_drawings_page_1_image_2 %}
+				<div class="row " style="max-height:23cm;overflow:hidden;">
+					<div class="col-xs-12" style=""> 
+						 <img style="max-height:23cm" src={{ doc.offer_drawings_page_1_image_2 }} class="img-responsive center-block">
+					</div>
+				</div>
+			{%- endif %}
+		</div>
+		<!--
+		<div class="container-fluid" style="">
+			{% if doc.footer %}
+			<div class="row" style="position:absolute; bottom:20px;width:100%;"> 
+				<div class="col-xs-12 text-center" style=""> 
+					<div class="text-center" style=""> 
+					 	<span style=""> {{ _(doc.footer) }}</span>
+				 	</div>
+				</div>
+			</div>
+			{% endif %}
+		</div>-->
+		
+	</section>
+	<!-- backgroun-image not working in wkhtmltopdf ???-->
+	                   	<!--<div style="width: 600px; height: 600px;background-image: url(https://cdn.pixabay.com/photo/2018/07/08/14/16/cat-3523992_1280.jpg)"></div> -->
+	
+	<section class="pg" style="">
+		<div class="container-fluid" style="">
+			{% if doc.offer_drawings_page_2_image_1 %}
+				<div class="row" style="max-height:23cm;overflow:hidden;">
+					<div class="col-xs-12" style=""> 
+						 	<img style="max-height:23cm" src={{ doc.offer_drawings_page_2_image_1 }} class="img-responsive center-block">
+					</div>
+				</div>
+			{%- endif %}
+			{% if doc.offer_drawings_page_2_image_1 %}
+				<div class="row " style="max-height:23cm;overflow:hidden;">
+					<div class="col-xs-12" style=""> 
+						 <img style="max-height:23cm" src={{ doc.offer_drawings_page_2_image_2 }} class="img-responsive center-block">
+					</div>
+				</div>
+			{%- endif %}
+		</div>
+		<!--
+		<div class="container-fluid" style="">
+			{% if doc.footer %}
+			<div class="row" style="position:absolute; bottom:20px;width:100%;"> 
+				<div class="col-xs-12 text-center" style=""> 
+					<div class="text-center" style=""> 
+					 	<span style=""> {{ _(doc.footer) }}</span>
+				 	</div>
+				</div>
+			</div>
+			{% endif %}
+		</div>-->
+		
+	</section>
+	
+	<section class="pg" style="">
+		<div class="container-fluid" style="">
+			{% if doc.offer_drawings_page_3_image_1 %}
+				<div class="row" style="max-height:23cm;overflow:hidden;">
+					<div class="col-xs-12" style=""> 
+						 	<img style="max-height:23cm" src={{ doc.offer_drawings_page_3_image_1 }} class="img-responsive center-block">
+					</div>
+				</div>
+			{%- endif %}
+			{% if doc.offer_drawings_page_3_image_2 %}
+				<div class="row " style="max-height:23cm;overflow:hidden;">
+					<div class="col-xs-12" style=""> 
+						 <img style="max-height:23cm" src={{ doc.offer_drawings_page_3_image_2 }} class="img-responsive center-block">
+					</div>
+				</div>
+			{%- endif %}
+		</div>
+		<!--
+		<div class="container-fluid" style="">
+			{% if doc.footer %}
+			<div class="row" style="position:absolute; bottom:20px;width:100%;"> 
+				<div class="col-xs-12 text-center" style=""> 
+					<div class="text-center" style=""> 
+					 	<span style=""> {{ _(doc.footer) }}</span>
+				 	</div>
+				</div>
+			</div>
+			{% endif %}
+		</div>-->
+		
+	</section>
+	
+	
+	
+	<!-- ============================================================ -->
+	
+	<!--	TECHNICAL OFFER: NUMBERED GROUPS (4 GROUPS PER 1 PAGE)	  -->
+	
+	<!-- ============================================================ -->
+	
+	{% macro increment(storage, key, inc=1) %}
+	    {% if storage.update({key: storage[key] + inc}) %} {% endif %}
+	{% endmacro %}
+	
+	<!--
+	{% macro append_(storage, key, value) %}
+	    {% if total.update({'pdf_layouts': total['pdf_layouts'].append('value1')}) %} {% endif %}
+	{% endmacro %}
+	
+	{% set total = { 'total_with_picture': 0 } %} 
+	{% set pdf_layouts = [] %} 
+	
+	{%- for row in doc.project_offer_technical_raw_material_list|selectattr('pdf_location', 'number') -%}
+			{% if row.pdf_location > 0 %}
+				{{ increment(total, 'total_with_picture') }}
+				{{ pdf_layouts.append(row.pdf_location) }} 
+			{%- endif %} 
+	{%- endfor -%}
+	
+	{% if total.update({'pages': (total.total_with_picture//4)}) %}{%- endif %} 
+		{{ total.total_with_picture }} {{ total.pages }} {{ pdf_layouts|unique|join(',') }}
+	-->
+
+	{% set page_counter = { 'no': 0,  'current_image':'', 'current_group_no':0, 'group_amount_in_current_page' :0, 'last_page_not_closed':0 , 'last_row_not_closed':0, 'image_has_been_displayed': 0} %} 
+	
+	<!-- Groups are created and each 4 groups are showed in one page by two groups in row. There are image in the middle of page (between 1th and 2nd group row) -->
+	
+	{% for group in doc.project_offer_technical_raw_material_list|groupby('pdf_location')%} <!-- group_by pdf_locations-->
+		{{ increment(page_counter, 'current_group_no') }}<!-- count current group no-->
+		{% if group.grouper > 0 %} <!-- if is numbered pdf_location (bigger than 0; zero is considered as unnumbered)-->
+			
+			{% if (group.grouper+3) is divisibleby(4) %} <!-- if pdf_location +3 divides by 4 do new page)-->
+				
+				{% if page_counter.update({'group_amount_in_current_page': 0}) %}{%- endif %} <!-- reset column(group) amount at each pages start-->
+				{% if page_counter.update({'last_page_not_closed': 1}) %}{%- endif %} <!-- page not closed -->
+				{{ increment(page_counter, 'no') }} <!-- do page counting-->
+				
+				<!-- set central image for current page-->
+				<!-- FIX! TODO - read image name automatically by page's no?!-->
+				{% if page_counter.no == 1 %}
+					{% if page_counter.update({'current_image': doc.technical_offer_image_no_1}) %}{%- endif %}
+				{% elif page_counter.no == 2 %}
+					{% if page_counter.update({'current_image': doc.technical_offer_image_no_2}) %}{%- endif %}								
+				{% elif page_counter.no == 3 %}
+					{% if page_counter.update({'current_image': doc.technical_offer_image_no_3}) %}{%- endif %}								
+				{% else %}
+					{% if page_counter.update({'current_image': doc.technical_offer_image_no_4}) %}{%- endif %}								
+				{% endif %}
+				
+				 <!-- start new section (page) -->
+				<section class="pg" style="">
+					<div class="container-fluid">
+						<div class="row " style="">
+							<div class="col-xs-12 offers-drawings-page-header">
+								<div class="text-center" style=""> 
+									<p class="third-page-header-text">{{ _(doc.offer_technical_header_text) }} </p> 
+								</div>
+							</div>
+						</div>			
+			{% endif %}
+
+						{{ increment(page_counter, 'group_amount_in_current_page') }} <!--count current groups sequence in page (from 1 to 4)-->
+											
+						{% if (group.grouper+1) is divisibleby(2) %} <!-- start new row if pdf_location+1 divides by 2-->
+							<div class="row " style="margin-top:20px;">
+						{% endif %}
+						
+						<div class="col-xs-6">
+							<div class="" style=""> 
+								<table class="technical-offer" style="width:100%;">							
+									{% for item in group.list %}
+										{% if loop.index == 1 %} 
+											<tr>
+												<th style="text-align:left;white-space: nowrap; text-indent: 5%; background-color:orange;"> <span style="color:red;"> {{ group.grouper }} </span> {% if item.master_item %} {{ _(item.master_item | truncate(60)) }} {%- endif %}</th><th style="text-align:right;padding-right:10%; background-color:orange;"></th>
+											</tr>
+										{% endif %}
+										<tr>
+											<td style="text-align:left;white-space: nowrap; text-indent: 5%;">{% if item.item %} - {{ _(item.item | truncate(60)) }} {%- endif %}	</td><td style="text-align:right;padding-right:10%;"> {% if item.material_embedded_in_types %} {{ _(item.material_embedded_in_types) }} {%- endif %}</td>
+										</tr>
+									{% endfor %}
+								</table>
+							</div>
+						</div>
+						
+						
+						
+						{% if (group.grouper) is divisibleby(2) %} <!-- end new row; if pdf_location divides by 2-->
+							{% if page_counter.update({'last_row_not_closed': 0}) %} {% endif %}	
+							</div>
+							{% if (group.grouper) is not divisibleby(4) %} <!-- show pages' central image (only after first row) -->							
+								{% if page_counter.current_image %}															
+									<div class="row" style="max-height:17cm;overflow:hidden;">
+										<div class="col-xs-12" style=""> 
+											 	<img style="max-height:17cm" src={{ page_counter.current_image }} class="img-responsive center-block">
+										</div>
+									</div>
+								{%- endif %}
+							{% else %}						
+							{% endif %}
+						{% else %}
+							{% if page_counter.update({'last_row_not_closed': 1}) %} {% endif %}																				
+						{% endif %}
+
+			{% if (group.grouper) is divisibleby(4) %}	 <!-- close the page; end if was new page (pdf_location divides by 4)-->		
+					</div>
+				</section>
+				{% if page_counter.update({'last_page_not_closed': 0}) %}{%- endif %} <!-- set that page is closed -->
+			{% endif %}
+			
+		{%- endif %} <!-- end if pdf_location > 0 -->
+	{% endfor %} <!-- end of grouping by pdf_location--> <!-- -->
+	
+	<!-- close the row if it was not closed (what is fullfilled in cases if there are only 1 or 3 columns in page)-->
+	{% if page_counter.last_row_not_closed == 1 %}
+			</div>
+	{%- endif %}
+	
+	<!-- show the image if row was not closed (what is fullfilled in cases if there are only 1 or 3 columns in page) and there was only one column in page-->
+	<!-- NB! if there were 3 columns in page then central image are showed already, so no need in such case-->
+	{% if page_counter.last_row_not_closed == 1 and page_counter.group_amount_in_current_page == 1  %}
+			{% if page_counter.current_image %}															
+				<div class="row" style="max-height:17cm;overflow:hidden;">
+					<div class="col-xs-12" style=""> 
+						 	<img style="max-height:17cm" src={{ page_counter.current_image }} class="img-responsive center-block">
+					</div>
+				</div>
+			{%- endif %}
+	{%- endif %}
+	
+	<!-- close the page if page was not closed till this point (what is fullfilled in cases if there are not all 4 columns in one page)-->
+	{% if page_counter.last_page_not_closed == 1 %}
+			</div>
+		</section>
+	{%- endif %}
+	
+	<!-- ============================================================ -->
+	
+	<!--	TECHNICAL OFFER: UNNUMBERED GROUPS (MULTIPLE PAGE)		  -->
+	
+	<!-- ============================================================ -->
+			
+	{% set counter_unnumbered = { 'page_no': 0, 'item_no' : 0, 'last_row_not_closed':0} %} 
+	
+	{% for group in doc.project_offer_technical_raw_material_list|groupby('pdf_location')%} <!-- group_by pdf_locations-->
+		
+		{{ increment(counter_unnumbered, 'page_no') }}
+		
+		<!-- page start must be showed only once as multiple page section is used -->
+		{% if counter_unnumbered.page_no == 1 %}
+			<section class="pg-multiple" style="background-color:white;page-break-before: always !important;">
+				<div class="container-fluid" style="">
+					<div class="row " style="">
+						<div class="col-xs-12 third-page-header">
+							<div class="text-center" style=""> 
+								<p class="third-page-header-text">{{ _(doc.offer_technical_header_text) }}</p>
+							</div>
+						</div>
+					</div>
+		{% endif %}
+		
+		{% for group2 in group.list | groupby('master_item') %} <!-- group_by master_item-->
+			{% if group.grouper == 0 %} <!-- filter by unnumbered=> if is unnumbered pdf_location (equal to 0)-->
+				{{ increment(counter_unnumbered, 'item_no') }}
+				
+				{% if (counter_unnumbered.item_no + 1) is divisibleby(2) %} <!-- start new row if odd-->
+					<div class="row " style="margin-top:20px;">
+				{% else %}
+				{% endif %}
+				
+				<!-- columns must be showed for each group-->
+				<div class="col-xs-6" style="">
+					<div class="" style=""> 
+						<table class="technical-offer" style="width:100%;"> <!-- don't forget to set table to width=100%-->
+							{% for item in group2.list %}
+								{% if loop.index == 1 %} <!-- table header must be showed only once-->
+									<tr>
+										<th style="text-align:left;white-space: nowrap; text-indent: 5%; background-color:orange;"> {% if item.master_item %} {{ _(item.master_item | truncate(60)) }} {%- endif %}</th><th style="text-align:right;padding-right:10%; background-color:orange;"></th>
+									</tr>
+								{% endif %}
+								<tr>
+									<td style="text-align:left;white-space: nowrap; text-indent: 5%;">{% if item.item %} - {{ _(item.item | truncate(60)) }} {%- endif %}	</td><td style="text-align:right;padding-right:10%;"> {% if item.material_embedded_in_types %} {{ _(item.material_embedded_in_types) }} {%- endif %}</td>
+								</tr>
+							{% endfor %}
+						</table>
+					</div>
+				</div>
+				
+				
+				{% if (counter_unnumbered.item_no) is divisibleby(2) %} <!-- end  row if even group -->
+					</div>
+					{% if counter_unnumbered.update({'last_row_not_closed': 0}) %} {% endif %}	
+				{% else %}	
+					{% if counter_unnumbered.update({'last_row_not_closed': 1}) %} {% endif %}		
+				{% endif %}
+				
+			{%- endif %} <!-- end if is unnumbered pdf_location (equal to 0)-->
+		{% endfor %} <!-- end of grouping by master_item --> 
+	{% endfor %} <!-- end of grouping by pdf_location--> <!-- -->
+	
+			<!-- close last row if it was not closed -->
+			{% if counter_unnumbered.last_row_not_closed ==  1 %} 
+				</div>
+			{% else%}
+			{% endif %}
+	
+			<!-- this page is pg-multiple (accordingly have to be closed only once)-->
+					</div> <!-- end of container fluid-->
+			</section> <!-- end of section pg-multiple -->
+
+	<!--
+		
+	<section class="pg-multiple" style="background-color:white;">
+		<div class="container-fluid" style="">
+			<div class="row " style="">
+				<div class="col-xs-12 third-page-header">
+					<div class="text-center" style=""> 
+						<p class="third-page-header-text">{{ _(doc.page_3_header_text) }}</p>
+					</div>
+				</div>
+			</div	
+		
+		
+	<section class="pg" style="">
+		<div class="container-fluid">
+			<div class="row " style="">
+				<div class="col-xs-12 offers-drawings-page-header">
+					<div class="text-center" style=""> 
+						<p class="third-page-header-text">{{ _(doc.offer_technical_header_text) }} {{ total.total_with_picture }} {{ total.pages }} {{ pdf_layouts|unique|join(',') }}</p>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row " style="margin-top:20px;">
+				
+				<div class="col-xs-6">
+					<div class="" style=""> 
+						<table class="table">							
+							{% set total = { 'count': 0} %} 							
+							{%- for row in doc.project_offer_technical_raw_material_list -%}
+								{% if row.pdf_location == '1' %}
+									{{ increment(total, 'count') }}
+									{% if total.count == 1 %}
+										<tr>
+											<th style="text-align:left;white-space: nowrap; text-indent: 5%; background-color:orange;">{% if row.master_item and row.pdf_location %} {{row.pdf_location}} {{ _(row.master_item | truncate(60)) }} {%- endif %}	</th><th style="text-align:right;padding-right:10%; background-color:orange;"></th>
+										<tr>								
+									{% endif %}
+									<tr>
+										<td style="text-align:left;white-space: nowrap; text-indent: 5%;">{% if row.item %} - {{ _(row.item | truncate(60)) }} {%- endif %}	</td><td style="text-align:right;padding-right:10%;"> {% if row.material_embedded_in_types %} {{ _(row.material_embedded_in_types) }} {%- endif %}</td>
+									<tr>
+									{%- endif %}							
+							{%- endfor -%}
+						</table>
+					</div>
+				</div>
+				
+				<div class="col-xs-6">
+					<div class="text-center" style=""> 
+						<table class="table">							
+							{% set total = { 'count': 0} %} 							
+							{%- for row in doc.project_offer_technical_raw_material_list -%}
+								{% if row.pdf_location == '2' %}
+									{{ increment(total, 'count') }}
+									{% if total.count == 1 %}
+										<tr>
+											<th style="text-align:left;white-space: nowrap; text-indent: 5%; background-color:orange;">{% if row.master_item and row.pdf_location %} {{row.pdf_location}} {{ _(row.master_item | truncate(60)) }} {%- endif %}	</th><th style="text-align:right;padding-right:10%; background-color:orange;"></th>
+										<tr>								
+									{% endif %}
+									<tr>
+										<td style="text-align:left;white-space: nowrap; text-indent: 5%;">{% if row.item %} - {{ _(row.item | truncate(60)) }} {%- endif %}	</td><td style="text-align:right;padding-right:10%;"> {% if row.material_embedded_in_types %} {{ _(row.material_embedded_in_types) }} {%- endif %}</td>
+									<tr>
+									{%- endif %}							
+							{%- endfor -%}
+						</table>
+					</div>
+				</div>
+				
+			</div>
+			
+			{% if doc.technical_offer_image_no_1 %}
+				<div class="row" style="max-height:10cm;overflow:hidden;">
+					<div class="col-xs-12" style=""> 
+						 	<img style="max-height:10cm" src={{ doc.technical_offer_image_no_1 }} class="img-responsive center-block">
+					</div>
+				</div>
+			{%- endif %}
+			
+			<div class="row " style="">
+				
+				<div class="col-xs-6">
+					<div class="text-center" style=""> 
+						{%- for row in doc.project_offer_technical_raw_material_list -%}
+							{% if row.pdf_location == '3' %}
+								{{ _(row.item) }} - {{ _(row.material_embedded_in_types) }} <br>
+								{%- endif %}							
+						{%- endfor -%}
+					</div>
+				</div>
+				
+				<div class="col-xs-6">
+					<div class="text-center" style=""> 
+						{%- for row in doc.project_offer_technical_raw_material_list -%}
+							{% if row.pdf_location == '4' %}
+								{{ _(row.item) }} - {{ _(row.material_embedded_in_types) }} <br>
+							{%- endif %}	
+						{%- endfor -%}
+					</div>
+				</div>
+				
+			</div>
+			
+		</div>
+	</section>
+	-->
+	
+	<section class="pg" style="page-break-before: always !important;">
+		<div class="container-fluid">
+			<div class="row " style="">
+				<div class="col-xs-12 offers-drawings-page-header">
+					<div class="text-center" style=""> 
+						<p class="third-page-header-text">{{ _(doc.offer_financial_header_text) }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row" style=""> 
+			<div class="col-xs-12" style="width:95%;"> 
+				<table class="table" style="margin-left:20px; margin-top: 20px; display:block;">
+					<thead>					
+						<tr style="padding:10px; background-color:DarkOrange ;font-size:2em; text-align:center; border:1px solid black;">
+							<th colspan=2 style="text-align:center;">{{ doc.offer_financial_factory_kit_label}}</th>
+						</tr>
+						<tr style="padding:10px; background-color:Tomato ;font-size:1em; text-align:center;">
+							<th class="" style="width: 80%; text-align:center;"> {{ _("Name") }} </th><th class="" style="width: 20%; text-align:center;">{{ _("Included") }}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{%- for row in doc.project_offer_financial_factory_kit_items -%}
+							{% if row.show %}
+								<tr style="border:1px solid black;">														
+								{% if row.factory_kit_item %}
+									<td style="width: 80%;">{{ _(row.factory_kit_item) }}</td>
+								{% else %}
+									<td></td>
+								{% endif %}
+							
+								{% if row.type %}
+									<td style="width: 20%; text-align:center;">{{ _(row.type) }}</td>
+								{% else %}
+									<td></td>
+								{% endif %}
+								</tr>
+							{%- endif %}
+						{%- endfor -%}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<div class="row" style=""> 
+			<div class="col-xs-12" style="width:95%;"> 
+				{% set counter_price_offer = { 'columns': 0 } %} 
+				
+				{% if doc.price_offer_delivery_show %}
+					{{ increment(counter_price_offer, 'columns') }}
+				{% endif %}
+				
+				{% if doc.price_offer_factory_kit_show %}
+					{{ increment(counter_price_offer, 'columns') }}
+				{% endif %}
+				
+				{% if doc.price_offer_assembling_show %}
+					{{ increment(counter_price_offer, 'columns') }}
+				{% endif %}
+				
+				
+				<table class="table" style="margin-left:20px; margin-top: 20px; display:block;">
+					<thead>
+						
+						<tr style="padding:10px; background-color:DarkOrange ;font-size:2em; text-align:center; border:1px solid black;">
+							<th colspan={{ counter_price_offer.columns }} style="text-align:center;">{{ doc.offer_financial_price_offer_label}}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr style="border:1px solid black;">	
+							
+							{% if doc.price_offer_delivery_show  %}
+																				
+								{% if doc.price_offer_delivery_image  %}
+									<td style="width: 33%;text-align:center; "><img  src={{ doc.price_offer_delivery_image }} class="img-responsive center-block"></td>
+								{% else %}
+									<td></td>
+								{% endif %}
+							
+							{% endif %}
+							
+							{% if doc.price_offer_factory_kit_show  %}							
+					
+								{% if doc.price_offer_factory_kit_image %}
+									<td style="width: 33%; text-align:center;"><img  src={{ doc.price_offer_factory_kit_image }} class="img-responsive center-block"></td>
+								{% else %}
+									<td></td>
+								{% endif %}
+							
+							{% endif %}
+							
+							{% if doc.price_offer_assembling_show  %}	
+						
+								{% if doc.price_offer_assembling_image %}
+									<td style="width: 33%; text-align:center;"><img  src={{ doc.price_offer_assembling_image }} class="img-responsive center-block"></td>
+								{% else %}
+									<td></td>
+								{% endif %}
+							
+							{% endif %}													
+						</tr>
+						
+						<tr style="border:1px solid black;">
+							
+							{% if doc.price_offer_delivery_show  %}
+																					
+								{% if doc.price_offer_delivery_label  %}
+									<td style="width: 33%;text-align:center; ">{{ doc.price_offer_delivery_label}}</td>
+								{% else %}
+									<td></td>
+								{% endif %}
+							
+							{% endif %}
+							
+							{% if doc.price_offer_factory_kit_show  %}	
+					
+								{% if doc.price_offer_factory_kit_label %}
+									<td style="width: 33%; text-align:center;">{{ doc.price_offer_factory_kit_label }}</td>
+								{% else %}
+									<td></td>
+								{% endif %}
+
+							{% endif %}
+						
+							{% if doc.price_offer_assembling_show  %}	
+						
+								{% if doc.price_offer_assembling_label %}
+									<td style="width: 33%; text-align:center;">{{ doc.price_offer_assembling_label }}</td>
+								{% else %}
+									<td></td>
+								{% endif %}
+								
+							{% endif %}	
+							
+						</tr>
+						
+						<tr style="border:1px solid black;">		
+							
+							{% if doc.price_offer_delivery_show  %}																			
+								{% if doc.price_offer_delivery_amount  %}
+									<td style="width: 33%;text-align:center; ">{{ frappe.utils.fmt_money(doc.price_offer_delivery_amount, currency=doc.currency) }}</td>
+								{% else %}
+									<td></td>
+								{% endif %}
+							{% endif %}
+					
+							{% if doc.price_offer_factory_kit_show  %}	
+
+								{% if doc.price_offer_factory_kit_amount %}
+									<td style="width: 33%; text-align:center;">{{ frappe.utils.fmt_money(doc.price_offer_factory_kit_amount, currency=doc.currency) }}</td>
+								{% else %}
+									<td></td>
+								{% endif %}
+								
+							{% endif %}
+
+							{% if doc.price_offer_assembling_show  %}	
+
+								{% if doc.price_offer_assembling_amount %}
+									<td style="width: 33%; text-align:center;">{{ frappe.utils.fmt_money(doc.price_offer_assembling_amount, currency=doc.currency) }}</td>
+								{% else %}
+									<td></td>
+								{% endif %}
+							
+							{% endif %}	
+
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<div class="row" style=""> 
+			<div class="col-xs-12" style="width:95%;"> 
+				<table class="table" style="margin-left:20px; margin-top: 20px; display:block;">
+					<thead>					
+						<tr style="padding:10px; background-color:DarkOrange ;font-size:2em; text-align:center; border:1px solid black;">
+							<th colspan=3 style="text-align:center;">{{ doc.offer_financial_options_label}}</th>
+						</tr>
+						<tr style="padding:10px; background-color:Tomato ;font-size:1em; text-align:center;">
+							<th class="" style="width: 70%; text-align:center;"> {{ _("Name") }} </th><th class="" style="width: 15%; text-align:center;">{{ _("Option") }}</th><th class="" style="width: 15%; text-align:center;">{{ _("Not Included") }}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{%- for row in doc.project_offer_financial_option_items -%}
+								<tr style="border:1px solid black;">														
+								{% if row.option_item_name %}
+									<td style="width: 70%;text-align:center; ">{{ _(row.option_item_name) }}</td>
+								{% else %}
+									<td></td>
+								{% endif %}
+							
+								{% if row.option_included %}
+									<td style="width: 15%; text-align:center;">  {{ frappe.utils.fmt_money(row.option_included, currency=doc.currency) }} </td>
+								{% else %}
+									<td></td>
+								{% endif %}
+								
+								{% if row.option_not_included %}
+									<td style="width: 15%; text-align:center;"> {{ _(row.option_not_included) }}</td>
+								{% else %}
+									<td></td>
+								{% endif %}
+																
+								</tr>
+
+						{%- endfor -%}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		
+		<!--
+		<div class="container-fluid" style="">
+			{% if doc.footer %}
+			<div class="row" style="position:absolute; bottom:20px;width:100%;"> 
+				<div class="col-xs-12 text-center" style=""> 
+					<div class="text-center" style=""> 
+					 	<span style=""> {{ _(doc.footer) }}</span>
+				 	</div>
+				</div>
+			</div>
+			{% endif %}
+		</div>-->
+		
+	</section>
+	
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const page_div = document.querySelector('.page-break');
+			page_div.style.display = 'flex';
+			page_div.style.flexDirection = 'column';
+			const footer_html = document.getElementById('footer-html');
+			footer_html.classList.add('hidden-pdf');
+			footer_html.classList.remove('visible-pdf');
+			footer_html.style.order = 1;
+			footer_html.style.marginTop = '20px';
+		});
+	</script>
+<body>
+</html>
