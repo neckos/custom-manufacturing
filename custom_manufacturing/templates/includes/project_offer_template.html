@@ -696,7 +696,7 @@
 		{{ increment(page_counter, 'current_group_no') }}<!-- count current group no-->
 		{% if group.grouper > 0 %} <!-- if is numbered pdf_location (bigger than 0; zero is considered as unnumbered)-->
 			
-			{% if (group.grouper+3) is divisibleby(4) %} <!-- if pdf_location +3 divides by 4 do new page)-->
+			{% if 1 is divisibleby(4) %} <!-- if pdf_location +3 divides by 4 do new page)-->
 				
 				{% if page_counter.update({'group_amount_in_current_page': 0}) %}{%- endif %} <!-- reset column(group) amount at each pages start-->
 				{% if page_counter.update({'last_page_not_closed': 1}) %}{%- endif %} <!-- page not closed -->
