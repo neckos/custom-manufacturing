@@ -694,7 +694,7 @@
 	
 	{% for group in doc.project_offer_technical_raw_material_list|groupby('pdf_location')%} <!-- group_by pdf_locations-->
 		{{ increment(page_counter, 'current_group_no') }}<!-- count current group no-->
-		{% if group.grouper > 0 %} <!-- if is numbered pdf_location (bigger than 0; zero is considered as unnumbered)-->
+		{% if group.grouper|int > 0 %} <!-- if is numbered pdf_location (bigger than 0; zero is considered as unnumbered)-->
 			
 			{% if (group.grouper|int +3) is divisibleby(4) %} <!-- if pdf_location +3 divides by 4 do new page)-->
 				
@@ -826,7 +826,7 @@
 		{% endif %}
 		
 		{% for group2 in group.list | groupby('master_item') %} <!-- group_by master_item-->
-			{% if group.grouper == 0 %} <!-- filter by unnumbered=> if is unnumbered pdf_location (equal to 0)-->
+			{% if group.grouper|int == 0 %} <!-- filter by unnumbered=> if is unnumbered pdf_location (equal to 0)-->
 				{{ increment(counter_unnumbered, 'item_no') }}
 				
 				{% if (counter_unnumbered.item_no|int + 1) is divisibleby(2) %} <!-- start new row if odd-->
