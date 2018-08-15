@@ -6,6 +6,19 @@ import json
 import random
 
 @frappe.whitelist()
+def get_frappe_render():
+	return frappe.render_template(template, context)
+
+@frappe.whitelist()
+def get_alternative_items(item_code):
+	return frappe.db.sql(
+		"""
+			select alternative_item_code as alt_item, alternative_item_name as name
+			from `tabItem Alternative`
+		    where item_code=%s order by idx
+		""", (item_code), as_dict=1)
+
+@frappe.whitelist()
 def create_random_color_hex():
     return "#{:06x}".format(random.randint(0, 0xFFFFFF))
 
