@@ -106,7 +106,7 @@ standard_queries = {
 	"Quotation Item": "custom_manufacturing.utils.joined_quotation_item_query"
 }
 
-fixtures = [{'doctype': 'Print Format', 'filters': [{'name': 'Project Offer'}]},{'doctype': 'Custom Script', 'filters': [['name', 'in',['Quotation-Client', 'Quotation Item-Client', 'Project Offer-Client', 'BOM-Client']]]}, {'doctype': 'Custom Field', 'filters': [['dt', 'in',['BOM', 'BOM Item', 'Quotation', 'Quotation Item', 'Item']]]}, {'doctype': 'Property Setter', 'filters': [['doc_type', 'in',['BOM', 'BOM Item', 'Quotation', 'Quotation Item', 'Item']]]}, ]
+fixtures = [{'doctype': 'Print Format', 'filters': [{'name': 'Project Offer'}]},{'doctype': 'Custom Script', 'filters': [['name', 'in',['Quotation-Client', 'Quotation Item-Client', 'Project Offer-Client', 'BOM-Client', 'Item-Client']]]}, {'doctype': 'Custom Field', 'filters': [['dt', 'in',['BOM', 'BOM Item', 'Quotation', 'Quotation Item', 'Item']]]}, {'doctype': 'Property Setter', 'filters': [['doc_type', 'in',['BOM', 'BOM Item', 'Quotation', 'Quotation Item', 'Item']]]}, ]
 
 website_route_rules = [{"from_route":"/lala", "to_route": "project_offer_template"},]
 
