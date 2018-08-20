@@ -43,5 +43,14 @@
   "name": "Item-Client",
   "script": "frappe.ui.form.on('Item', {\n\trefresh: function(frm) {\n\t\tfrm.dashboard.hide();\n\t\tfrm.add_custom_button(__(\"Add / Edit Item Alternatives\"), function() {\n\t\t\tfrappe.set_route(\"List\", \"Item Alternative\", {\"item_code\": frm.doc.name});\n\t\t}, __(\"View\"));\n\t\tcur_frm.remove_custom_button(__(\"Duplicate\"));\n\t}\n})",
   "script_type": "Client"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Custom Script",
+  "dt": "Customer",
+  "modified": "2018-08-20 12:46:13.235286",
+  "name": "Customer-Client",
+  "script": "frappe.ui.form.on('Customer', {\n\trefresh: function(frm) {\n\t\tfrm.dashboard.hide();\n\t\tcur_frm.remove_custom_button(__(\"Accounting Ledger\"));\n\t\tcur_frm.remove_custom_button(__(\"Accounts Receivable\"));\n\t}\n})",
+  "script_type": "Client"
  }
 ]
