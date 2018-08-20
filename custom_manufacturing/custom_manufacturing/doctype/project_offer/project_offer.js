@@ -11,6 +11,9 @@ frappe.ui.form.on('Project Offer', {
 			let url = "/api/method/custom_manufacturing.custom_manufacturing.doctype.project_offer.project_offer.print_project_offer_pdf";
 			open_url_post(url, {"doc": frm.doc}, true);
 		});
+		doctype = 'Customer';
+		frappe.dynamic_link = {doc: frm.doc, fieldname: doctype.toLowerCase(), doctype: doctype};
+		frm.set_query('contact_person', erpnext.queries.contact_query);
 	},
 	read: function(frm) {
 		console.log("offer_description_template_name");
