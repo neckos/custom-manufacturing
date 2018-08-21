@@ -1,0 +1,11 @@
+[
+ {
+  "country": "Latvia",
+  "docstatus": 0,
+  "doctype": "Address Template",
+  "is_default": 1,
+  "modified": "2018-08-21 14:46:16.144945",
+  "name": "Latvia",
+  "template": "{{ address_line1 }} {% if address_line2 %}, {{ address_line2 }} {% endif -%}, {{ city }}\n, {{ country }}{% if pincode %}, {{ pincode }} {% endif -%}"
+ }
+]
