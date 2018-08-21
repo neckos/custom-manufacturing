@@ -174,10 +174,10 @@
 				</div>
 				<div class="col-xs-6  column-break customer-container">
 					<div class="text-left co-bcg" style=""> 
-						<p>{{ _(doc.customer_label) }}: {{ doc.customer_full_name }}</p>
-						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.phone_icon) }} {{ doc.customer_phone }}</p>
-						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.email_icon) }} {{ doc.customer_email }}</p>
-						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.address_icon) }} {{ doc.customer_address }}</p>
+						<p>{{ _(doc.customer_label) }}: {{ doc.contact_display }}</p>
+						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.phone_icon) }} {{ doc.contact_mobile }}</p>
+						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.email_icon) }} {{ doc.contact_email }}</p>
+						<p>{{ ('<i class="%(icon)s" aria-hidden="true"></i>')|format(icon=doc.address_icon) }} {{ doc.address_display }}</p>
 					</div>
 				</div>
 			</div>

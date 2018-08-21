@@ -21,9 +21,9 @@
   "docstatus": 0,
   "doctype": "Custom Script",
   "dt": "Project Offer",
-  "modified": "2018-08-02 17:12:29.693257",
+  "modified": "2018-08-21 14:54:08.480486",
   "name": "Project Offer-Client",
-  "script": "cur_frm.add_fetch(\"agent\", \"employee_name\", \"agent_full_name\");\ncur_frm.add_fetch(\"agent\", \"cell_number\", \"agent_phone\");\ncur_frm.add_fetch(\"agent\", \"company_email\", \"agent_email\");\ncur_frm.add_fetch(\"agent\", \"current_address\", \"agent_city_country\");\n\ncur_frm.add_fetch(\"customer\", \"customer_primary_contact\", \"customer_full_name\");\ncur_frm.add_fetch(\"customer\", \"mobile_no\", \"customer_phone\");\ncur_frm.add_fetch(\"customer\", \"email_id\", \"customer_email\");\ncur_frm.add_fetch(\"customer\", \"primary_address\", \"customer_address\");\ncur_frm.add_fetch(\"customer\", \"customer_primary_contact\", \"authorized_signatory_customer_label\");",
+  "script": "cur_frm.add_fetch(\"agent\", \"employee_name\", \"agent_full_name\");\ncur_frm.add_fetch(\"agent\", \"cell_number\", \"agent_phone\");\ncur_frm.add_fetch(\"agent\", \"company_email\", \"agent_email\");\ncur_frm.add_fetch(\"agent\", \"current_address\", \"agent_city_country\");\n\n\n",
   "script_type": "Client"
  },
  {

@@ -11,9 +11,52 @@ frappe.ui.form.on('Project Offer', {
 			let url = "/api/method/custom_manufacturing.custom_manufacturing.doctype.project_offer.project_offer.print_project_offer_pdf";
 			open_url_post(url, {"doc": frm.doc}, true);
 		});
+		//create dynamic_link info as contact_person and customer_address queries need it
 		doctype = 'Customer';
 		frappe.dynamic_link = {doc: frm.doc, fieldname: doctype.toLowerCase(), doctype: doctype};
+		//show only customer's contact persons and address
 		frm.set_query('contact_person', erpnext.queries.contact_query);
+		frm.set_query('customer_address', erpnext.queries.address_query);
+	},
+	contact_person: function(frm){
+		//copied from erpnext.utils.get_contact_details(frm);
+		if(cur_frm.doc["contact_person"]) {
+				frappe.call({
+					method: "frappe.contacts.doctype.contact.contact.get_contact_details",
+					args: {contact: frm.doc.contact_person },
+					callback: function(r) {
+						if(r.message){
+							frm.set_value(r.message);
+							//we need to set contact_display info to signature field as well:
+							frm.set_value("authorized_signatory_customer_label", r.message['contact_display']);
+						}
+					}
+				})
+			}
+	},
+	customer_address: function(frm) {
+		//erpnext.utils.get_address_display(frm, 'customer_address', 'address_display');
+		var address_field = "customer_address";
+		var display_field = "address_display";
+		if(cur_frm.doc[address_field]) {
+			console.log("having address field");
+			
+			frappe.call({
+				method: "frappe.contacts.doctype.address.address.get_address_display",
+				args: {"address_dict": frm.doc[address_field] },
+				callback: function(r) {
+					if(r.message) {
+						console.log(r.message);
+						frm.set_value(display_field, r.message)
+					}
+					//erpnext.utils.set_taxes(frm, address_field, display_field, is_your_company_address);
+				}
+			})
+			
+		} else {
+			console.log("no address field");
+			//frm.set_value(display_field, '');
+		}
 	},
 	read: function(frm) {
 		console.log("offer_description_template_name");
