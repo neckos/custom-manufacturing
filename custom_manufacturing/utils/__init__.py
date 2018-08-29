@@ -5,6 +5,17 @@ from six import string_types
 import json
 import random
 
+
+@frappe.whitelist()
+def get_item_group_items(item_group):
+	#item_group = "Raw Material"
+	return frappe.db.sql(
+		"""
+			select item_code, item_name
+			from `tabItem`
+		    where item_group=%s order by item_name asc
+		""", (item_group), as_dict=1)
+
 @frappe.whitelist()
 def get_frappe_render():
 	return frappe.render_template(template, context)

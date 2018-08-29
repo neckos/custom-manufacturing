@@ -1463,7 +1463,7 @@
   "in_list_view": 0,
   "in_standard_filter": 0,
   "insert_after": "ignore_pricing_rule",
-  "label": "Master BOM List",
+  "label": "BOM List",
   "modified": "2018-07-03 14:32:12.076668",
   "name": "Quotation-master_bom_list",
   "no_copy": 0,
