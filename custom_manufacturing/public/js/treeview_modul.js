@@ -181,8 +181,16 @@ frappe.ui.TreeInModal = class {
 
 	on_node_click(node) {
 		this.expand_node(node);
-		frappe.dom.activate(this.wrapper, node.$tree_link, 'tree-link');
+		//frappe.dom.activate(this.wrapper, node.$tree_link, 'tree-link');
+		this.wrapper.find(`.${'tree-link'}.${'active'}`).removeClass('active');
+		node.$tree_link.addClass('active');
 		if(node.$toolbar) this.show_toolbar(node);
+		/*		
+		activate: function($parent, $child, common_class, active_class='active') {
+			$parent.find(`.${common_class}.${active_class}`).removeClass(active_class);
+			$child.addClass(active_class);
+		},
+		*/
 	}
 
 	expand_node(node, click = true) {
