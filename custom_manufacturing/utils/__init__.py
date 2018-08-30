@@ -5,6 +5,45 @@ from six import string_types
 import json
 import random
 
+from frappe.utils import (cint, cstr, flt, formatdate, get_timestamp, getdate, now_datetime, random_string, strip)
+
+@frappe.whitelist()
+def custom_item_autoname(doctype, event_name):
+	from erpnext.stock.doctype.item.item import Item
+	def autoname(self):
+		if self.naming_by == _('Naming Series'):
+		#frappe.db.get_default("item_naming_by") == "Naming Series":
+			if self.variant_of:
+				if not self.item_code:
+					template_item_name = frappe.db.get_value("Item", self.variant_of, "item_name")
+					self.item_code = make_variant_item_code(self.variant_of, template_item_name, self)
+			else:
+				from frappe.model.naming import set_name_by_naming_series
+				set_name_by_naming_series(self)
+				self.item_code = self.name
+		elif not self.item_code:
+			frappe.msgprint(_("Item Code is mandatory because Item is not automatically numbered"), raise_exception=1)
+
+		self.item_code = strip(self.item_code)
+		self.name = self.item_code
+	Item.autoname = autoname
+	"""
+	if frappe.db.get_default("item_naming_by") == "Naming Series":
+		if self.variant_of:
+			if not self.item_code:
+				template_item_name = frappe.db.get_value("Item", self.variant_of, "item_name")
+				self.item_code = make_variant_item_code(self.variant_of, template_item_name, self)
+		else:
+			from frappe.model.naming import set_name_by_naming_series
+			set_name_by_naming_series(self)
+			self.item_code = self.name
+	elif not self.item_code:
+		msgprint(_("Item Code is mandatory because Item is not automatically numbered"), raise_exception=1)
+
+	self.item_code = strip(self.item_code)
+	self.name = self.item_code
+	"""
+
 
 @frappe.whitelist()
 def get_item_group_items(item_group):

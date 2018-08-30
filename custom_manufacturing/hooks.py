@@ -89,6 +89,11 @@ app_include_js = "/assets/js/custom_manufacturing.js"
 #	}
 # }
 
+doc_events = {
+    "Item": {
+        "autoname": "custom_manufacturing.utils.custom_item_autoname"
+    },
+}
 
 #doc_events = {
 #    "Work Order": {
