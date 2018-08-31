@@ -11,7 +11,7 @@ from frappe.utils import (cint, cstr, flt, formatdate, get_timestamp, getdate, n
 def custom_item_autoname(doctype, event_name):
 	from erpnext.stock.doctype.item.item import Item
 	def autoname(self):
-		if self.naming_by == _('Naming Series'):
+		if self.naming_by == 'Naming Series':
 		#frappe.db.get_default("item_naming_by") == "Naming Series":
 			if self.variant_of:
 				if not self.item_code:
