@@ -7,6 +7,18 @@ import random
 
 from frappe.utils import (cint, cstr, flt, formatdate, get_timestamp, getdate, now_datetime, random_string, strip)
 
+
+@frappe.whitelist()
+def check_is_set_item_group_parent_item(item_group, item_code):
+	#item_group = "Raw Material"
+	return frappe.db.sql(
+		"""
+			select item_code, item_name, item_group
+			from `tabItem`
+		    where (item_group=%s and is_group_parent_item=1 and item_code<>%s) order by item_name asc
+		""", (item_group, item_code), as_dict=1) or ''
+
+
 @frappe.whitelist()
 def custom_item_autoname(doctype, event_name):
 	from erpnext.stock.doctype.item.item import Item

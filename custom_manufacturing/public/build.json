@@ -4,7 +4,9 @@
 	"js/custom_manufacturing.js":[
 	     "templates/includes/alternative_items_selector.html",
 	     "templates/includes/items_in_item_groups.html",
-	     "public/js/treeview_modul.js"
+	     "public/js/treeview_modul.js",
+	     "public/js/custom_form_footer.js",
+	     "public/js/document_ready.js" 
 	]
 
 }
