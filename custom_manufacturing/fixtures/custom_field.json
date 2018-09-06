@@ -3183,7 +3183,7 @@
   "modified": "2018-09-05 17:10:37.928166",
   "name": "Item-parent_item_name",
   "no_copy": 0,
-  "options": "parent_item.item_name",
+  "options": "",
   "permlevel": 0,
   "precision": "",
   "print_hide": 0,
