@@ -272,6 +272,10 @@ frappe.ui.TreeInModal = class {
 		node.$tree_link.on('click', () => {
 			setTimeout(() => {this.on_node_click(node);}, 100);
 		});
+		
+		node.$tree_link.on('dblclick', () => {
+			setTimeout(() => {console.log("This is double clikc");}, 100);
+		});
 	}
 
 	get_toolbar(node) {
@@ -311,6 +315,8 @@ frappe.views.TreeViewInModal = Class.extend({
 		this.page_name = frappe.get_route_str();
 		this.get_tree_nodes =  me.opts.get_tree_nodes || "frappe.desk.treeview.get_children";
 
+		this.children_level = opts.children_level;
+		
 		//this.get_permissions();
 		//this.make_page();
 		//this.make_filters();
@@ -354,55 +360,67 @@ frappe.views.TreeViewInModal = Class.extend({
 		//cur_tree = this.tree;
 	},
 	select_node: function(node) {
+		var me = this;
+		console.log("This is node object:");
+		console.log(me);
+		/*
+		Some variable to check is it single-doctype (Item Group) select or multi-doctype (Item Group and Items)
+		if single-doctype then on select node
+		*/
+		
 		console.log('This is select node');
-		var me = this;		
-		//this.wrapper = $('<h1>Here will be results</h1>').appendTo(this.opts.results);
-		this.node_view.empty();		
-		//get data:
-		new Promise(resolve => frappe.call({
-			type:"GET",
-			method: "custom_manufacturing.utils.get_item_group_items",
-			args: {
-				"item_group": node.data.value
-			},
-			callback: resolve
-		})).then(r => {
-			//show data and add functionality:
-			if(r.message) {
-				console.log(r.message);
-				//this.opts.view_template = "items_in_item_groups";
-				//$(frappe.render_template('items_in_item_groups', {data:data_template})).appendTo(this.node_view);		//could use render_template but how then add setting back in parent grid?	
-				$.each(r.message, function(i, d) {
-					var row = $(repl('<div class="row link-select-row">\
-						<div class="col-xs-12">\
-							<b><a href="#"> %(name)s </a></b></div>\
-						</div>', {
-							name: d.item_name,
-						})).appendTo(me.node_view);
-					//add functionality to set picked (via <a>) in grid:
-					row.find("a")
-						.attr('data-value', d.item_code)
-						.click(function () {
-							var value = $(this).attr("data-value");
-							var $link = this;
+		console.log('children_level:');
+		console.log(me.children_level);	
+		
+		if(me.children_level){
+			//this.wrapper = $('<h1>Here will be results</h1>').appendTo(this.opts.results);
+			this.node_view.empty();		
+			//get data:
+			new Promise(resolve => frappe.call({
+				type:"GET",
+				method: "custom_manufacturing.utils.get_item_group_items",
+				args: {
+					"item_group": node.data.value
+				},
+				callback: resolve
+			})).then(r => {
+				//show data and add functionality:
+				if(r.message) {
+					//console.log(r.message);
+					//this.opts.view_template = "items_in_item_groups";
+					//$(frappe.render_template('items_in_item_groups', {data:data_template})).appendTo(this.node_view);		//could use render_template but how then add setting back in parent grid?	
+					$.each(r.message, function(i, d) {
+						var row = $(repl('<div class="row link-select-row">\
+							<div class="col-xs-12">\
+								<b><a href="#"> %(name)s </a></b></div>\
+							</div>', {
+								name: d.item_name,
+							})).appendTo(me.node_view);
+						//add functionality to set picked (via <a>) in grid:
+						row.find("a")
+							.attr('data-value', d.item_code)
+							.click(function () {
+								var value = $(this).attr("data-value");
+								var $link = this;
 							
-							if (me.opts.parent_target.is_grid) {
-								// set in grid
-								me.opts.parent_target.set_in_grid(value);
-							} else {
-								if (me.opts.parent_target.doctype)
-									me.opts.parent_target.parse_validate_and_set_in_model(value);
-								else {
-									me.opts.parent_target.set_input(value);
-									me.opts.parent_target.$input.trigger("change");
+								if (me.opts.parent_target.is_grid) {
+									// set in grid
+									me.opts.parent_target.set_in_grid(value);
+								} else {
+									if (me.opts.parent_target.doctype)
+										me.opts.parent_target.parse_validate_and_set_in_model(value);
+									else {
+										me.opts.parent_target.set_input(value);
+										me.opts.parent_target.$input.trigger("change");
+									}
+									me.opts.dialog.hide();
 								}
-								me.opts.dialog.hide();
-							}
-							return false;
-						})
-				});		
-			}
-		});
+								return false;
+							})
+					});		
+				}
+			});
+		}
 		
 	},	
 })
@@ -435,19 +453,50 @@ frappe.ui.form.LinkTreeSelector = Class.extend({
 	},
 	search: function () {
 		var me = this;
-		//$('<h1>Virsraksts</h1>').appendTo(this.dialog.fields_dict.results.$wrapper);
-		var tree_wrapper = this.dialog.fields_dict.tree.$wrapper;
-		var options = {
-			doctype: 'Item Group',
-			parent: $('<div class = "row"></div>').appendTo(tree_wrapper),
-			parent_target: me.target,
-			dialog:this.dialog,
-		};
-		frappe.views.trees[options.doctype] = new frappe.views.TreeViewInModal(options);
-		//console.log('frappe.views.trees:');
-		//console.log(frappe.views.trees);
-		//console.log(frappe.views.trees[options.doctype].node_view);
-		
+		console.log("me.doctype:");
+		console.log(me.doctype);
+		//by default accept that this have to be only tree view
+		me.tree_level = me.doctype;
+		me.children_level = "";
+		//check is this multi-doctype tree case (doctype is in children_level, for example, "Item" is in relationship "Item Group-> Item")
+		new Promise(resolve => frappe.call({
+			type:"GET",
+			method: "frappe.client.get_list",
+			args: {
+				doctype: "Multi Doctype Tree Manager",
+				filters:{children_level: me.doctype},
+				fields: ["name", "tree_level", "children_level"]
+			},
+			callback: resolve
+		})).then(r => {
+			console.log(r);
+			if(r.message){ //if is found, then get tree doctype and children view doctype
+				console.log("have response from Multi Doctype Tree Manager");
+				console.log(r.message[0]['tree_level']);
+				console.log(r.message[0]['children_level']);
+				me.tree_level = r.message[0]['tree_level'];
+				me.children_level = r.message[0]['children_level'];
+			}else{
+				console.log("have NO response from Multi Doctype Tree Manager");
+			}
+			console.log("me.tree_level:");
+			console.log(me.tree_level);
+			// me.opts.doctype
+			//$('<h1>Virsraksts</h1>').appendTo(this.dialog.fields_dict.results.$wrapper);
+			var tree_wrapper = this.dialog.fields_dict.tree.$wrapper;
+			var options = {
+				doctype: me.tree_level, //"Item Group", //me.tree_level,
+				children_level: me.children_level,
+				parent: $('<div class = "row"></div>').appendTo(tree_wrapper),
+				parent_target: me.target,
+				dialog:this.dialog,
+			};
+			frappe.views.trees[options.doctype] = new frappe.views.TreeViewInModal(options);
+			//console.log('frappe.views.trees:');
+			//console.log(frappe.views.trees);
+			//console.log(frappe.views.trees[options.doctype].node_view);
+		});
+
 	},
 });
 
