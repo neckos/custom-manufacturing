@@ -6,7 +6,8 @@
 	     "templates/includes/items_in_item_groups.html",
 	     "public/js/treeview_modul.js",
 	     "public/js/custom_form_footer.js",
-	     "public/js/document_ready.js" 
+	     "public/js/document_ready.js",
+	     "public/js/custom_form_dashboard.js"
 	]
 
 }

@@ -7,6 +7,14 @@ import random
 
 from frappe.utils import (cint, cstr, flt, formatdate, get_timestamp, getdate, now_datetime, random_string, strip)
 
+@frappe.whitelist()
+def check_multi_doctype_tree(doctype):
+	return frappe.db.sql(
+		"""
+			select name, tree_level, children_level
+			from `tabMulti Doctype Tree Manager`
+		    where (tree_level=%s or children_level=%s) order by name asc
+		""", (doctype, doctype), as_dict=1) or ''
 
 @frappe.whitelist()
 def check_is_set_item_group_parent_item(item_group, item_code):

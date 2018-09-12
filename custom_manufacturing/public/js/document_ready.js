@@ -1,3 +1,5 @@
 $(document).ready(function(){
-	window.cur_frm.page.wrapper.find('.timeline').hide();
+	///Not working?
+	//window.cur_frm.page.wrapper.find('.timeline').hide();
+	//window.cur_frm.page.wrapper.find(".form-dashboard").hide();
 });

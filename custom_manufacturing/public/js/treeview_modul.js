@@ -3,7 +3,7 @@ frappe.ui.TreeInModal = class {
 	constructor({
 		parent, label, icon_set, toolbar, expandable, with_skeleton=1, 	// eslint-disable-line
 
-		args, method, get_label, on_render, on_click 		// eslint-disable-line
+		args, method, get_label, on_render, on_click, on_db_click		// eslint-disable-line
 	}) {
 		$.extend(this, arguments[0]);
 		this.setup_treenode_class();
@@ -274,8 +274,13 @@ frappe.ui.TreeInModal = class {
 		});
 		
 		node.$tree_link.on('dblclick', () => {
-			setTimeout(() => {console.log("This is double clikc");}, 100);
+			setTimeout(() => {console.log("This is double clikc");this.on_double_click(node);}, 100);
 		});
+	}
+	
+	on_double_click(node) {
+		this.on_db_click && this.on_db_click(node);
+
 	}
 
 	get_toolbar(node) {
@@ -355,23 +360,48 @@ frappe.views.TreeViewInModal = Class.extend({
 			args: this.args,
 			method: this.get_tree_nodes,
 			on_click: (node) => { this.select_node(node); },
+			on_db_click: (node) => { this.double_click_on_node(node); },
+			
 		});		
 		this.node_view = $('<div class="col-sm-12 hidden-xs" style="background-color:;"></div>').appendTo(html_parent);// CUSTOM!!!  this.opts.results
 		//cur_tree = this.tree;
 	},
-	select_node: function(node) {
+	double_click_on_node: function(node) {
 		var me = this;
-		console.log("This is node object:");
+		console.log("This is me object in DB click:");
 		console.log(me);
+		console.log("This is node  object DB click::");
+		console.log(node);
+		
+		var value = node.data.value
+	
+		if (me.opts.parent_target.is_grid) {
+			// set in grid
+			me.opts.parent_target.set_in_grid(value);
+		} else {
+			if (me.opts.parent_target.doctype)
+				me.opts.parent_target.parse_validate_and_set_in_model(value);
+			else {
+				me.opts.parent_target.set_input(value);
+				me.opts.parent_target.$input.trigger("change");
+			}
+			me.opts.dialog.hide();
+		}
+		return false;
+		
+	},
+	select_node: function(node) { // single click
+		var me = this;
 		/*
-		Some variable to check is it single-doctype (Item Group) select or multi-doctype (Item Group and Items)
-		if single-doctype then on select node
-		*/
+		console.log("This is me object in click:");
+		console.log(me);
+		console.log("This is node object in click:");
+		console.log(node);
 		
 		console.log('This is select node');
 		console.log('children_level:');
 		console.log(me.children_level);	
-		
+		*/
 		if(me.children_level){
 			//this.wrapper = $('<h1>Here will be results</h1>').appendTo(this.opts.results);
 			this.node_view.empty();		
@@ -458,40 +488,55 @@ frappe.ui.form.LinkTreeSelector = Class.extend({
 		//by default accept that this have to be only tree view
 		me.tree_level = me.doctype;
 		me.children_level = "";
-		//check is this multi-doctype tree case (doctype is in children_level, for example, "Item" is in relationship "Item Group-> Item")
+		//check is this multi-doctype tree case (doctype is in children_level, for example, "Item" is in relations "Item Group-> Item")
+		//frappe.client.get_list
+		//args: {
+		//doctype: "Multi Doctype Tree Manager",
+		//filters:{children_level: me.doctype},
+		//fields: ["name", "tree_level", "children_level"]
+		//},
+		
+		//check_multi_doctype_tree() - will return all records where doctype is in tree_level or children_level
+		//toDO - do not show children level if doctype is in tree level!
 		new Promise(resolve => frappe.call({
 			type:"GET",
-			method: "frappe.client.get_list",
+			method: "custom_manufacturing.utils.check_multi_doctype_tree",
 			args: {
-				doctype: "Multi Doctype Tree Manager",
-				filters:{children_level: me.doctype},
-				fields: ["name", "tree_level", "children_level"]
+				doctype: me.doctype,
 			},
 			callback: resolve
 		})).then(r => {
-			console.log(r);
+			//console.log("This is callback-resolve:");
+			//console.log(r);
 			if(r.message){ //if is found, then get tree doctype and children view doctype
 				console.log("have response from Multi Doctype Tree Manager");
 				console.log(r.message[0]['tree_level']);
 				console.log(r.message[0]['children_level']);
 				me.tree_level = r.message[0]['tree_level'];
 				me.children_level = r.message[0]['children_level'];
+				
+				
+				console.log("me.tree_level:");
+				console.log(me.tree_level);
+				// me.opts.doctype
+				//$('<h1>Virsraksts</h1>').appendTo(this.dialog.fields_dict.results.$wrapper);
+				var tree_wrapper = this.dialog.fields_dict.tree.$wrapper;
+				var options = {
+					doctype: me.tree_level, //"Item Group", //me.tree_level,
+					children_level: me.children_level,
+					parent: $('<div class = "row"></div>').appendTo(tree_wrapper),
+					parent_target: me.target,
+					dialog:this.dialog,
+				};
+				frappe.views.trees[options.doctype] = new frappe.views.TreeViewInModal(options);
+				
 			}else{
 				console.log("have NO response from Multi Doctype Tree Manager");
+				//$('<h1>No Tree View for: '+me.doctype+'</h1>').appendTo(me.dialog.fields_dict.results.$wrapper);
+				me.dialog.hide();
+				frappe.msgprint(__("No Tree View for: ") + me.doctype);
+				
 			}
-			console.log("me.tree_level:");
-			console.log(me.tree_level);
-			// me.opts.doctype
-			//$('<h1>Virsraksts</h1>').appendTo(this.dialog.fields_dict.results.$wrapper);
-			var tree_wrapper = this.dialog.fields_dict.tree.$wrapper;
-			var options = {
-				doctype: me.tree_level, //"Item Group", //me.tree_level,
-				children_level: me.children_level,
-				parent: $('<div class = "row"></div>').appendTo(tree_wrapper),
-				parent_target: me.target,
-				dialog:this.dialog,
-			};
-			frappe.views.trees[options.doctype] = new frappe.views.TreeViewInModal(options);
 			//console.log('frappe.views.trees:');
 			//console.log(frappe.views.trees);
 			//console.log(frappe.views.trees[options.doctype].node_view);
