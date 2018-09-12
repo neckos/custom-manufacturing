@@ -27,4 +27,16 @@ frappe.ui.form.Dashboard = Class.extend({
 	clear_headline: function() {
 		this.frm.layout.show_message();
 	},
+	add_comment: function(text, alert_class, permanent) {
+		var me = this;
+		this.set_headline_alert(text, alert_class);
+		if(!permanent) {
+			setTimeout(function() {
+				me.clear_headline();
+			}, 10000);
+		}
+	},
+	clear_comment: function() {
+		this.clear_headline();
+	},
 })
