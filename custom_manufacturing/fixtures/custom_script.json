@@ -2,6 +2,15 @@
  {
   "docstatus": 0,
   "doctype": "Custom Script",
+  "dt": "Multi Doctype Tree Manager",
+  "modified": "2018-09-10 15:41:34.471631",
+  "name": "Multi Doctype Tree Manager-Client",
+  "script": "frappe.ui.form.on('Multi Doctype Tree Manager', {\n\tbefore_save: function(frm) {\n\t\tif(cur_frm.doc.tree_level){\n\t\t\tcur_frm.set_value(\"naming_series\", cur_frm.doc.tree_level + \" - \" + cur_frm.doc.children_level);\n\t\t}else{\n\t\t\tfrappe.throw(__(\"Tree level field is mandatory!\"));\n\t\t}\n\t}\n});",
+  "script_type": "Client"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Custom Script",
   "dt": "Quotation",
   "modified": "2018-09-05 14:38:58.856217",
   "name": "Quotation-Client",

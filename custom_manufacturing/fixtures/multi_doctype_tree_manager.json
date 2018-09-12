@@ -1,0 +1,56 @@
+[
+ {
+  "children_level": "Item",
+  "docstatus": 0,
+  "doctype": "Multi Doctype Tree Manager",
+  "modified": "2018-09-06 18:22:29.242779",
+  "name": "Item Group - Item00001",
+  "naming_series": "Item Group - Item",
+  "tree_level": "Item Group"
+ },
+ {
+  "children_level": null,
+  "docstatus": 0,
+  "doctype": "Multi Doctype Tree Manager",
+  "modified": "2018-09-10 15:53:08.223126",
+  "name": "Item Group - undefined00001",
+  "naming_series": "Item Group - undefined",
+  "tree_level": "Item Group"
+ },
+ {
+  "children_level": null,
+  "docstatus": 0,
+  "doctype": "Multi Doctype Tree Manager",
+  "modified": "2018-09-10 16:26:09.614333",
+  "name": "Department - undefined00001",
+  "naming_series": "Department - undefined",
+  "tree_level": "Department"
+ },
+ {
+  "children_level": null,
+  "docstatus": 0,
+  "doctype": "Multi Doctype Tree Manager",
+  "modified": "2018-09-10 16:26:53.672121",
+  "name": "Territory - undefined00001",
+  "naming_series": "Territory - undefined",
+  "tree_level": "Territory"
+ },
+ {
+  "children_level": null,
+  "docstatus": 0,
+  "doctype": "Multi Doctype Tree Manager",
+  "modified": "2018-09-10 16:27:10.880826",
+  "name": "Sales Person - undefined00001",
+  "naming_series": "Sales Person - undefined",
+  "tree_level": "Sales Person"
+ },
+ {
+  "children_level": null,
+  "docstatus": 0,
+  "doctype": "Multi Doctype Tree Manager",
+  "modified": "2018-09-10 16:27:19.626267",
+  "name": "Customer Group - undefined00001",
+  "naming_series": "Customer Group - undefined",
+  "tree_level": "Customer Group"
+ }
+]
