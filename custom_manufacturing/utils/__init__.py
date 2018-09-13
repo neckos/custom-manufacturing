@@ -278,7 +278,8 @@ def make_quotation_from_bom(source_name, target_doc=None):
 				item.update({'mass':mass})
 	return doc
 
-		
+
+"""		
 @frappe.whitelist()
 def make_boms_from_quotations(quotation):
 	q_doc = frappe.get_doc('Quotation',quotation)
@@ -313,8 +314,8 @@ def make_boms_from_quotations(quotation):
 			target.quantity = master_qty
 			target.save(ignore_permissions=True)
 			frappe.db.commit()
-	
-	"""
+"""
+"""
 	from frappe.model.mapper import get_mapped_doc
 	from frappe.model.mapper import get_mapped_doc
 	q_doc = frappe.get_doc('Quotation',quotation)
@@ -671,7 +672,7 @@ def make_quotation_from_bom(source_name, target_doc=None):
 				item.update({'mass':mass})
 	return doc
 
-"""
+#"""
 @frappe.whitelist()
 def make_boms_from_quotations(quotation):
 	q_doc = frappe.get_doc('Quotation',quotation)
@@ -696,7 +697,7 @@ def make_boms_from_quotations(quotation):
 			target.item = master_item
 			target.quotation = quotation
 			target.project = q_doc.project
-			target.type = "Estimate"
+			target.type = "Tāmes"
 			for item in items:
 				if item.master_item == master_item:
 					#frappe.msgprint(item.item_code)
@@ -707,7 +708,7 @@ def make_boms_from_quotations(quotation):
 			target.save(ignore_permissions=True)
 			frappe.db.commit()
 	
-"""
+#"""
 	"""
 	from frappe.model.mapper import get_mapped_doc
 	from frappe.model.mapper import get_mapped_doc
