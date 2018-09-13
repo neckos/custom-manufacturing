@@ -701,7 +701,7 @@ def make_boms_from_quotations(quotation):
 			for item in items:
 				if item.master_item == master_item:
 					#frappe.msgprint(item.item_code)
-					target.append('items',{'item_code':item.item_code, 'qty': item.factor,'uom': item.uom, 'rate':item.rate})
+					target.append('items',{'item_code':item.item_code, 'item_name':item.item_name, 'material_embedded_in':item.material_embedded_in, 'base_qty': item.base_qty, 'volume_factor': item.volume_factor, 'reserve_factor': item.reserve_factor, 'qty': item.qty, 'uom': item.uom, 'rate':item.rate})
 					#ToDo - fix needed! Get master_qty from Quotation Master Item not by calculating
 					master_qty = round(float(item.qty/item.factor),2)
 			target.quantity = master_qty
