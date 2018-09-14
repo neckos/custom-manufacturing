@@ -73,6 +73,7 @@ def create_new_bom(new_item, copy_from_bom, panel):
         for i in copy_from_bom.items:
             items.append(dict(
                 item_code= i.item_code,
+                item_name= i.item_name,
                 qty = round((float(i.qty) * float(qty)),2), #raw material qty has to be multiplied by bom qty 
                 stock_uom = i.uom,
                 uom = i.uom,
@@ -87,7 +88,8 @@ def create_new_bom(new_item, copy_from_bom, panel):
         'conversion_rate': 1,
         'items':items,
         'project':copy_from_bom.project,
-        'type':'Planning'
+        'type':'Uz ražošanu',
+        'country':copy_from_bom.country
     })
     new_bom.insert()
     frappe.db.commit()
