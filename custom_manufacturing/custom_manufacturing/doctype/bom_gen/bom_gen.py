@@ -83,7 +83,6 @@ def create_new_bom(new_item, copy_from_bom, panel):
 		'doctype':'BOM',
 		'item':new_item,
         'quantity':float(qty),
-        'company':'T',
         'currency':'EUR',
         'conversion_rate': 1,
         'items':items,
