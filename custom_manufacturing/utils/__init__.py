@@ -689,15 +689,15 @@ def make_boms_from_quotations(quotation):
 		if frappe.get_list('BOM', filters={'quotation': quotation, 'item': master_item}, fields=['name']):
 			#toDO - update BOM
 			print('Have to update BOM') #update
-			frappe.msgprint("Have to update BOM:" + master_item)
+			frappe.msgprint("Precei " + master_item + " (tāmes nr. "+quotation+") jau ir izveidota recepte. (ToDO - update)")
 		else:
 			#print('Create new BOM') #create new
-			frappe.msgprint("Create new BOM for:" + master_item)
+			frappe.msgprint("Izveidota jauna recepte precei:" + master_item)
 			target = frappe.new_doc("BOM")
 			target.item = master_item
 			target.quotation = quotation
-			target.project = q_doc.project
-			target.type = "Tāmes"
+			target.project = q_doc.project 
+			target.type = "Uz projektēšanu"
 			for item in items:
 				if item.master_item == master_item:
 					#frappe.msgprint(item.item_code)
