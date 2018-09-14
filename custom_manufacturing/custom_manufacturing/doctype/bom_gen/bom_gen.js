@@ -11,7 +11,8 @@ frappe.ui.form.on("BOM Gen", "project", function(frm) {
     cur_frm.set_query("bom", function() {
         return {
             "filters": {
-                "project": frm.doc.project
+                "project": frm.doc.project,
+				"type": "Uz projektēšanu",
             }
         };
     });
