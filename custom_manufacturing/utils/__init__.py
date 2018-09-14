@@ -689,10 +689,10 @@ def make_boms_from_quotations(quotation):
 		if frappe.get_list('BOM', filters={'quotation': quotation, 'item': master_item}, fields=['name']):
 			#toDO - update BOM
 			print('Have to update BOM') #update
-			frappe.msgprint("Have to update BOM")
+			frappe.msgprint("Have to update BOM:" + master_item)
 		else:
 			#print('Create new BOM') #create new
-			frappe.msgprint("Create new BOM")
+			frappe.msgprint("Create new BOM for:" + master_item)
 			target = frappe.new_doc("BOM")
 			target.item = master_item
 			target.quotation = quotation
