@@ -74,11 +74,15 @@ def create_new_bom(new_item, copy_from_bom, panel):
             items.append(dict(
                 item_code= i.item_code,
                 item_name= i.item_name,
+                material_embedded_in=i.material_embedded_in,
+                base_qty=i.base_qty,
+                volume_factor=i.volume_factor,
+                reserve_factor=i.reserve_factor,
                 qty = round((float(i.qty) * float(qty)),2), #raw material qty has to be multiplied by bom qty 
-                stock_uom = i.uom,
+                stock_uom = i.stock_uom,
                 uom = i.uom,
                 rate = i.rate
-            )) # stock_qty = float(i.qty),
+            ))
     new_bom = frappe.get_doc({
 		'doctype':'BOM',
 		'item':new_item,
@@ -97,6 +101,7 @@ def create_new_bom(new_item, copy_from_bom, panel):
     #else:
     #    print('already exist BOM')
     #    return copy_from_bom.name
+    	
         
 @frappe.whitelist()
 def copy_bom(source_name, target_doc=None):

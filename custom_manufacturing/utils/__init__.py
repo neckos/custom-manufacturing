@@ -14,6 +14,150 @@ import random
 from frappe.utils import (cint, cstr, flt, formatdate, get_timestamp, getdate, now_datetime, random_string, strip)
 
 @frappe.whitelist()
+def update_item_prices(items):
+	#frappe.msgprint(items)
+	if isinstance(items, string_types):
+		items = json.loads(items)
+	for item in items:
+		#frappe.msgprint(item['item_price'])
+		item_price = frappe.get_doc("Item Price", item['item_price'])
+		#frappe.msgprint(item_price.name)       
+		if not item_price:
+			frappe.throw(_("No Item Price found: ") + item['item_price'])
+		#frappe.msgprint(item_price.price_list_rate) 
+		item_price.price_list_rate = item['rate_new']
+		#frappe.msgprint(item_price.price_list_rate)
+		item_price.save()
+	 
+
+@frappe.whitelist()
+def get_item_prices(price_list = None, item_group = None, parent_item = None, recalculate_by_hour_rate = None):
+	#price list have to be picked always, so cannot be empty
+    #select only records with stock unit of measure if no need to recalculate by hour rate
+	if price_list and item_group:
+		print('price_list and item_group')
+		if parent_item:
+			print('parent_item')
+			if recalculate_by_hour_rate:
+				print('recalculate_by_hour_rate')
+				return frappe.db.sql("""
+					select 
+						`tabItem`.item_code, `tabItem`.item_name, `tabItem`.item_group, `tabItem`.parent_item, `tabItem Price`.price_list_rate, `tabItem Price`.price_list, 
+						`tabItem Price`.name as item_price, `tabUOM Conversion Detail`.conversion_factor, `tabUOM Conversion Detail`.uom
+					from 
+						`tabItem` 
+					left join 
+						`tabItem Price` on `tabItem Price`.item_code = `tabItem`.item_code
+					left join 
+						`tabUOM Conversion Detail` on `tabUOM Conversion Detail`.parent = `tabItem`.item_code
+					where 
+						(`tabItem Price`.price_list=%(price_list)s
+						and 
+						`tabItem`.item_group=%(item_group)s)
+						and
+						`tabItem`.parent_item=%(parent_item)s
+						and
+						`tabUOM Conversion Detail`.uom=%(recalculate_by_hour_rate)s)
+					order by 
+						`tabItem Price`.name asc
+					""", {'price_list': price_list, 'item_group':item_group, 'parent_item':parent_item, 'recalculate_by_hour_rate': recalculate_by_hour_rate}, as_dict=1) or ''	
+			else:
+				print('no recalculate_by_hour_rate')
+				return frappe.db.sql("""
+					select 
+						`tabItem`.item_code, `tabItem`.item_name, `tabItem`.item_group, `tabItem`.parent_item, `tabItem Price`.price_list_rate, `tabItem Price`.price_list, 
+						`tabItem Price`.name as item_price, `tabUOM Conversion Detail`.conversion_factor, `tabUOM Conversion Detail`.uom
+					from 
+						`tabItem` 
+					left join 
+						`tabItem Price` on `tabItem Price`.item_code = `tabItem`.item_code
+					left join 
+						`tabUOM Conversion Detail` on `tabUOM Conversion Detail`.parent = `tabItem`.item_code
+					where 
+						(`tabItem Price`.price_list=%(price_list)s
+						and 
+						`tabItem`.item_group=%(item_group)s
+						and
+						`tabItem`.parent_item=%(parent_item)s
+						and
+						`tabItem`.stock_uom = `tabUOM Conversion Detail`.uom
+						)
+					order by 
+						`tabItem Price`.name asc
+					""", {'price_list': price_list, 'item_group':item_group, 'parent_item':parent_item}, as_dict=1) or ''
+		else:
+			print('no parent_item')
+			if recalculate_by_hour_rate:
+				print('recalculate_by_hour_rate')
+				return frappe.db.sql("""
+					select 
+						`tabItem`.item_code, `tabItem`.item_name, `tabItem`.item_group, `tabItem`.parent_item, `tabItem Price`.price_list_rate, `tabItem Price`.price_list, 
+						`tabItem Price`.name as item_price, `tabUOM Conversion Detail`.conversion_factor, `tabUOM Conversion Detail`.uom
+					from 
+						`tabItem` 
+					left join 
+						`tabItem Price` on `tabItem Price`.item_code = `tabItem`.item_code
+					left join 
+						`tabUOM Conversion Detail` on `tabUOM Conversion Detail`.parent = `tabItem`.item_code
+					where 
+						(`tabItem Price`.price_list=%(price_list)s
+						and 
+						`tabItem`.item_group=%(item_group)s
+						and
+						`tabUOM Conversion Detail`.uom=%(recalculate_by_hour_rate)s)
+					order by 
+						`tabItem Price`.name asc
+					""", {'price_list': price_list, 'item_group':item_group, 'recalculate_by_hour_rate': recalculate_by_hour_rate}, as_dict=1) or ''	
+			else:
+				print('no recalculate_by_hour_rate')
+				return frappe.db.sql("""
+					select 
+						`tabItem`.item_code, `tabItem`.item_name, `tabItem`.item_group, `tabItem`.parent_item, `tabItem Price`.price_list_rate, `tabItem Price`.price_list, 
+						`tabItem Price`.name as item_price, `tabUOM Conversion Detail`.conversion_factor, `tabUOM Conversion Detail`.uom
+					from 
+						`tabItem` 
+					left join 
+						`tabItem Price` on `tabItem Price`.item_code = `tabItem`.item_code
+					left join 
+						`tabUOM Conversion Detail` on `tabUOM Conversion Detail`.parent = `tabItem`.item_code
+					where 
+						(`tabItem Price`.price_list=%(price_list)s
+						and 
+						`tabItem`.item_group=%(item_group)s
+						and
+						`tabItem`.stock_uom = `tabUOM Conversion Detail`.uom
+						)
+					order by 
+						`tabItem Price`.name asc
+					""", {'price_list': price_list, 'item_group':item_group}, as_dict=1) or ''
+	else:
+		print('no price_list and item_group')
+
+
+@frappe.whitelist()
+def get_item_prices_2(price_list = None, item_group = None, parent_item = None, recalculate_by_hour_rate = None):
+	#Note: to use mysql's "IS NULL" python variable must be None
+	frappe.msgprint(recalculate_by_hour_rate)
+	return frappe.db.sql(
+		"""
+			select `tabItem`.item_code, `tabItem`.item_name, `tabItem Price`.price_list_rate, `tabItem Price`.price_list, `tabItem`.item_group, `tabItem`.parent_item, 
+			`tabItem Price`.name as item_price, `tabUOM Conversion Detail`.conversion_factor, `tabUOM Conversion Detail`.uom
+			from `tabItem Price`, `tabItem` 
+			left join `tabUOM Conversion Detail` on `tabUOM Conversion Detail`.parent = `tabItem`.item_code
+			where `tabItem Price`.item_code = `tabItem`.item_code
+			and  (%(price_list)s IS NULL OR `tabItem Price`.price_list=%(price_list)s)
+			and  (%(item_group)s IS NULL OR `tabItem`.item_group=%(item_group)s)
+			and  (%(parent_item)s IS NULL OR `tabItem`.parent_item=%(parent_item)s)
+			and  (%(recalculate_by_hour_rate)s IS NULL OR `tabUOM Conversion Detail`.uom=%(recalculate_by_hour_rate)s)  
+			order by `tabItem Price`.name asc
+		""", {'price_list': price_list, 'item_group':item_group, 'parent_item':parent_item, 'recalculate_by_hour_rate': recalculate_by_hour_rate}, as_dict=1) or ''
+
+"""
+			and  (%(recalculate_by_hour_rate)s IS NULL OR `tabUOM Conversion Detail`.uom=%(recalculate_by_hour_rate)s)    
+"""
+    
+    
+@frappe.whitelist()
 def check_multi_doctype_tree(doctype):
 	return frappe.db.sql(
 		"""
@@ -701,7 +845,7 @@ def make_boms_from_quotations(quotation):
 			for item in items:
 				if item.master_item == master_item:
 					#frappe.msgprint(item.item_code)
-					target.append('items',{'item_code':item.item_code, 'item_name':item.item_name, 'material_embedded_in':item.material_embedded_in, 'base_qty': item.base_qty, 'volume_factor': item.volume_factor, 'reserve_factor': item.reserve_factor, 'qty': item.qty, 'uom': item.uom, 'rate':item.rate})
+					target.append('items',{'item_code':item.item_code, 'item_name':item.item_name, 'material_embedded_in':item.material_embedded_in, 'base_qty': item.base_qty, 'volume_factor': item.volume_factor, 'reserve_factor': item.reserve_factor, 'qty': item.qty, 'uom': item.uom, 'stock_uom': item.stock_uom, 'rate':item.rate})
 					#ToDo - fix needed! Get master_qty from Quotation Master Item not by calculating
 					master_qty = round(float(item.qty/item.factor),2)
 			target.quantity = master_qty
