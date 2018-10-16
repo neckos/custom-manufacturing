@@ -61,5 +61,14 @@
   "name": "Customer-Client",
   "script": "frappe.ui.form.on('Customer', {\n\trefresh: function(frm) {\n\t\tcur_frm.remove_custom_button(__(\"Accounting Ledger\"));\n\t\tcur_frm.remove_custom_button(__(\"Accounts Receivable\"));\n\t}\n})",
   "script_type": "Client"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Custom Script",
+  "dt": "Stock Entry",
+  "modified": "2018-10-16 11:35:45.541543",
+  "name": "Stock Entry-Client",
+  "script": "frappe.ui.form.on('Stock Entry', {\n\tsetup: function(frm) {\n\t\tfrm.set_query('uom', 'items', function(doc, cdt, cdn) {\n\t\t\tvar item = locals[cdt][cdn];\n\t\t\tif(!item.item_code) {\n\t\t\t\tfrappe.throw(__(\"Please enter Item Code to get UOM\"));\n\t\t\t} else {\n\t\t\t\t\tvar filters = {\n\t\t\t\t\t\t'item_code': item.item_code,\n\t\t\t\t\t}\n\t\t\t\treturn {\n\t\t\t\t\tquery : \"custom_manufacturing.utils.get_item_uoms\",\n\t\t\t\t\tfilters: filters\n\t\t\t\t}\n\t\t\t}\n\t\t});\n\t},\n})",
+  "script_type": "Client"
  }
 ]

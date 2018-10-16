@@ -12,6 +12,33 @@ import json
 import random
 
 from frappe.utils import (cint, cstr, flt, formatdate, get_timestamp, getdate, now_datetime, random_string, strip)
+from frappe.desk.reportview import get_match_cond, get_filters_cond
+
+def get_item_uoms(doctype, txt, searchfield, start, page_len, filters):
+	#frappe.msgprint(doctype)
+	cond = ""
+	args = {
+		'item_code': filters.get("item_code"),
+		'txt': "%{0}%".format(txt),
+		"start": start,
+		"page_len": page_len
+	}
+	return frappe.db.sql("""
+		select 
+			uom
+		from 
+			`tabUOM Conversion Detail` uoms
+		where 
+			uoms.parent = %(item_code)s
+			and
+			name like %(txt)s
+			{0}
+		{match_conditions}
+		order by 
+			name desc
+		limit 
+			%(start)s, %(page_len)s""".format(cond, match_conditions=get_match_cond(doctype)), args)
+
 
 @frappe.whitelist()
 def update_item_prices(items):
