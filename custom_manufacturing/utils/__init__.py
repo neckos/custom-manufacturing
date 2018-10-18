@@ -14,6 +14,58 @@ import random
 from frappe.utils import (cint, cstr, flt, formatdate, get_timestamp, getdate, now_datetime, random_string, strip)
 from frappe.desk.reportview import get_match_cond, get_filters_cond
 
+
+#function to overwrite some Meta information. NOT WORKING?
+@frappe.whitelist()
+def custom_meta_process(doctype, event_name):
+	from frappe.model.meta import Meta
+	def apply_custom_order(self):
+		#little bit dirty, but works
+		#get field special order:
+		if frappe.db.get_values("Custom Field Sorter", filters=dict(sort_for_doctype=self.name)):
+			#if frappe.get_all('Custom Field Sorter', fields=['*'], filters=dict(sort_for_doctype=self.name)): #Do not use this - will create loop
+			special_order_unsorted = frappe.get_all('Custom Field Sorter Detail', fields=['idx', 'field_name'], filters=dict(parent='Stock Entry Detail'))
+			special_order = sorted(special_order_unsorted, key=lambda k: k['idx']) 
+			#get field standart order (default + via customize form):
+			oldlist = [df for df in self.get('fields') if not df.get('is_custom_field')]
+			special_newlist = []
+			oldlist_fieldnames = [df.fieldname for df in oldlist]
+			#in special_newlist set: 
+			for special_order_field in special_order:
+				if special_order_field.field_name in oldlist_fieldnames: #double check - if our defined field is found in doctypes field names
+					field_info = [record for record in oldlist if record.get('fieldname') == special_order_field.field_name][0] #get full meta info of defined field
+					special_newlist.insert(special_order_field.idx, field_info) #add definded field's info to new order list
+					oldlist = [record for record in oldlist if record.get('fieldname') != special_order_field.field_name] #pop already found field from oldlist
+			#for df in special_newlist:
+			#	print(df.idx, df.fieldname)
+			#add leftover of oldlist to newlist
+			counter = len(special_newlist)
+			for record in oldlist:
+				counter+=1
+				special_newlist.insert(counter, record)
+			#print("----------------")
+			#reset order to new:
+			for i, elem in enumerate(special_newlist):
+				special_newlist[i].idx = i +1 
+			#for df in special_newlist:
+			#	print(df.idx, df.fieldname)
+			self.fields = special_newlist
+
+	def process(self):
+		print("Process for: " + self.name)
+		# don't process for special doctypes
+		# prevent's circular dependency
+		if self.name in self.special_doctypes:
+			return
+		self.add_custom_fields()
+		self.apply_property_setters()
+		self.sort_fields()
+		self.get_valid_columns()
+		self.set_custom_permissions()
+		self.apply_custom_order() #custom function
+
+	Item.process = process
+
 def get_item_uoms(doctype, txt, searchfield, start, page_len, filters):
 	#frappe.msgprint(doctype)
 	cond = ""
