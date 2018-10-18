@@ -95,7 +95,7 @@ doc_events = {
     },
 }
 """
-    #Not working for some default core doctypes like 'Meta' ???
+    #Not working for some default core doctypes like ''
     "Meta": {
         "process": "custom_manufacturing.utils.custom_meta_process"
     },
