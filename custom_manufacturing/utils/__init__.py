@@ -14,6 +14,72 @@ import random
 from frappe.utils import (cint, cstr, flt, formatdate, get_timestamp, getdate, now_datetime, random_string, strip)
 from frappe.desk.reportview import get_match_cond, get_filters_cond
 
+@frappe.whitelist()
+def get_items(warehouse, posting_date, posting_time):
+	#get all items in warehouse (via BIN doctype) , `tabUOM Conversion Detail` ucd  
+	items = frappe.db.sql('''
+		select 
+			i.name, i.item_name, i.stock_uom, ucd.conversion_factor
+		from 
+			`tabItem` i
+		left join
+			`tabBin` bin on i.name=bin.item_code
+		left join
+			`tabUOM Conversion Detail` ucd on i.name=ucd.parent
+		where 
+			i.disabled=0
+			and
+			ucd.uom=i.stock_uom
+			and 
+			bin.warehouse=%s''', (warehouse), as_dict=True)
+	#add these that have this warehouse as defaul
+	items += frappe.db.sql('''
+        select 
+            i.name, i.item_name, i.stock_uom, ucd.conversion_factor
+        from 
+            `tabItem` i
+		left join
+			`tabUOM Conversion Detail` ucd on i.name=ucd.parent
+        where 
+                i.is_stock_item=1 
+            and 
+                i.has_serial_no=0 
+            and 
+                i.has_batch_no=0 
+            and 
+                i.has_variants=0 
+            and 
+                i.disabled=0
+            and 
+                i.default_warehouse=%s
+			and
+			    ucd.uom=i.stock_uom
+            group by
+                i.name''', (warehouse), as_dict=True)
+
+	from erpnext.stock.utils import get_stock_balance
+	res = []
+	for item in items:
+		qty, rate = get_stock_balance(item.name, warehouse, posting_date, posting_time,
+			with_valuation_rate=True)
+		if not qty:
+			qty = 0.00
+		res.append({
+			"item_code": item.name,
+			"warehouse": warehouse,
+			"qty": qty,
+			"qty_in_uom": qty,
+			"uom": item.stock_uom,
+			"stock_uom": item.stock_uom,
+			"item_name": item.item_name,
+			"valuation_rate": rate,
+			"current_qty": qty,
+			"current_valuation_rate": rate,
+			"conversion_factor":item.conversion_factor
+		})
+
+	return res
+
 
 #function to overwrite some Meta information. NOT WORKING?
 @frappe.whitelist()

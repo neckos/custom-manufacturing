@@ -150,7 +150,7 @@ website_route_rules = [{"from_route":"/lala", "to_route": "project_offer_templat
 # Overriding Whitelisted Methods
 # ------------------------------
 #
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "custom_manufacturing.event.get_events"
-# }
+override_whitelisted_methods = {
+ 	"erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_items": "custom_manufacturing.utils.get_items"
+}
 
