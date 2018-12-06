@@ -14,6 +14,7 @@ import random
 from frappe.utils import (cint, cstr, flt, formatdate, get_timestamp, getdate, now_datetime, random_string, strip)
 from frappe.desk.reportview import get_match_cond, get_filters_cond
 
+#function to override erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_items:
 @frappe.whitelist()
 def get_items(warehouse, posting_date, posting_time):
 	#get all items in warehouse (via BIN doctype) , `tabUOM Conversion Detail` ucd  
