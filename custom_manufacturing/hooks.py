@@ -131,7 +131,9 @@ fixtures = [{'doctype': 'Address Template', 'filters': [{'name': 'Latvia'}]}, \
                         'Stock Reconciliation-Client', \
                         'Purchase Order-Client',\
                         'Purchase Invoice-Client', \
-                        'Sales Invoice-Client']]]}, \
+                        'Sales Invoice-Client',\
+                        'Material Request-Client'\
+                    ]]]}, \
     {'doctype': 'Custom Field', 'filters':\
         [['dt', 'in',[\
             'BOM', \
