@@ -117,7 +117,67 @@ standard_queries = {
 	"Quotation Item": "custom_manufacturing.utils.joined_quotation_item_query"
 }
 #'Multi Doctype Tree Manager',
-fixtures = [{'doctype': 'Address Template', 'filters': [{'name': 'Latvia'}]}, {'doctype': 'Print Format', 'filters': [{'name': 'Project Offer'}]},{'doctype': 'Custom Script', 'filters': [['name', 'in',['Quotation-Client', 'Quotation Item-Client', 'Project Offer-Client', 'BOM-Client', 'Item-Client', 'Customer-Client', 'Multi Doctype Tree Manager-Client', 'Stock Entry-Client', 'Item Price-Client','Stock Reconciliation-Client', 'Purchase Order-Client', 'Purchase Invoice-Client', 'Sales Invoice-Client']]]}, {'doctype': 'Custom Field', 'filters': [['dt', 'in',['BOM', 'BOM Item', 'Quotation', 'Quotation Item', 'Item', 'Customer', 'Address', 'Contact', 'Item Group', 'Quotation Master BOM', 'Item Price', 'Stock Entry Detail', 'Stock Reconciliation', 'Stock Reconciliation Item', 'Purchase Order', 'Purchase Order Item', 'Purchase Invoice', 'Purchase Invoice Item', 'Sales Invoice', 'Sales Invoice Item']]]}, {'doctype': 'Property Setter', 'filters': [['doc_type', 'in',['BOM', 'BOM Item', 'Quotation', 'Quotation Item', 'Item', 'Customer', 'Address', 'Contact', 'Item Group', 'Quotation Master BOM', 'Item Price', 'Stock Entry Detail', 'Stock Reconciliation', 'Stock Reconciliation Item', 'Purchase Order', 'Purchase Order Item', 'Purchase Invoice', 'Sales Invoice', 'Purchase Invoice Item', 'Sales Invoice Item']]]}, ]
+fixtures = [{'doctype': 'Address Template', 'filters': [{'name': 'Latvia'}]}, \
+    {'doctype': 'Print Format', 'filters': [{'name': 'Project Offer'}]},\
+    {'doctype': 'Custom Script', 'filters': \
+        [['name', 'in',['Quotation-Client',\
+                        'Quotation Item-Client', \
+                        'Project Offer-Client', \
+                        'BOM-Client', 'Item-Client',\
+                        'Customer-Client', \
+                        'Multi Doctype Tree Manager-Client', \
+                        'Stock Entry-Client', \
+                        'Item Price-Client',\
+                        'Stock Reconciliation-Client', \
+                        'Purchase Order-Client',\
+                        'Purchase Invoice-Client', \
+                        'Sales Invoice-Client']]]}, \
+    {'doctype': 'Custom Field', 'filters':\
+        [['dt', 'in',[\
+            'BOM', \
+            'BOM Item', \
+            'Quotation', \
+            'Quotation Item', \
+            'Quotation Master BOM', \
+            'Item', \
+            'Customer', \
+            'Address', \
+            'Contact', \
+            'Item Group',\
+            'Item Price', \
+            'Stock Entry', \
+            'Stock Entry Detail', \
+            'Stock Reconciliation', \
+            'Stock Reconciliation Item', \
+            'Purchase Order', \
+            'Purchase Order Item', \
+            'Purchase Invoice', \
+            'Purchase Invoice Item', \
+            'Sales Invoice',\
+            'Sales Invoice Item']]]},\
+    {'doctype': 'Property Setter', 'filters':\
+         [['doc_type', 'in',[\
+             'BOM', \
+             'BOM Item', \
+             'Quotation', \
+             'Quotation Item', \
+             'Quotation Master BOM', \
+             'Item', \
+             'Item Group', \
+             'Item Price', \
+             'Customer',\
+             'Address', \
+             'Contact', \
+             'Stock Entry', \
+             'Stock Entry Detail', \
+             'Stock Reconciliation', \
+             'Stock Reconciliation Item', \
+             'Purchase Order', \
+             'Purchase Order Item', \
+             'Purchase Invoice', \
+             'Purchase Invoice Item', \
+             'Sales Invoice', \
+             'Sales Invoice Item']]]}, ]
 
 website_route_rules = [{"from_route":"/lala", "to_route": "project_offer_template"},]
 
