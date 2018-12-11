@@ -154,7 +154,10 @@ fixtures = [{'doctype': 'Address Template', 'filters': [{'name': 'Latvia'}]}, \
             'Purchase Invoice', \
             'Purchase Invoice Item', \
             'Sales Invoice',\
-            'Sales Invoice Item']]]},\
+            'Sales Invoice Item'\
+            'Material Request', \
+            'Material Request Item'\
+        ]]]},\
     {'doctype': 'Property Setter', 'filters':\
          [['doc_type', 'in',[\
              'BOM', \
@@ -177,7 +180,10 @@ fixtures = [{'doctype': 'Address Template', 'filters': [{'name': 'Latvia'}]}, \
              'Purchase Invoice', \
              'Purchase Invoice Item', \
              'Sales Invoice', \
-             'Sales Invoice Item']]]}, ]
+             'Sales Invoice Item'\
+             'Material Request', \
+             'Material Request Item'\
+             ]]]}, ]
 
 website_route_rules = [{"from_route":"/lala", "to_route": "project_offer_template"},]
 
