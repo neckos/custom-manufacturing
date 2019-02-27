@@ -117,7 +117,7 @@ standard_queries = {
 	"Quotation Item": "custom_manufacturing.utils.joined_quotation_item_query"
 }
 #'Multi Doctype Tree Manager',
-fixtures = [{'doctype': 'Address Template', 'filters': [{'name': 'Latvia'}]}, \
+fixtures = ['Customize Form', {'doctype': 'Address Template', 'filters': [{'name': 'Latvia'}]}, \
     {'doctype': 'Print Format', 'filters': [{'name': 'Project Offer'}]},\
     {'doctype': 'Custom Script', 'filters': \
         [['name', 'in',['Quotation-Client',\
