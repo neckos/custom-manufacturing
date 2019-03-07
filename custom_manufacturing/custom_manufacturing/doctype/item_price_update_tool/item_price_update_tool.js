@@ -1,3 +1,5 @@
+cur_frm.add_fetch("parent_item", "item_name", "parent_item_name");
+
 frappe.ui.form.on("Item Price Update Tool",{ 
 	"new_rate": function(frm) {
 		cur_frm.get_items();

@@ -14,6 +14,17 @@ import random
 from frappe.utils import (cint, cstr, flt, formatdate, get_timestamp, getdate, now_datetime, random_string, strip)
 from frappe.desk.reportview import get_match_cond, get_filters_cond
 
+
+@frappe.whitelist()
+def create_item_prices_from_parent_item(some, some_more):
+	pass
+	#check  has parent
+	#check has not prices for itself
+	#if is parent and has not prices for itself then 
+	#get all parent prices
+	#for each parent price copy them and set item_code, item_name, item_uom
+	
+
 #function to override erpnext.stock.doctype.stock_reconciliation.stock_reconciliation.get_items:
 @frappe.whitelist()
 def get_items(warehouse, posting_date, posting_time):
