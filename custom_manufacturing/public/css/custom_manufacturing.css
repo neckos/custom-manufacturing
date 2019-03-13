@@ -1,0 +1,22 @@
+/*style disabled fields of selected (in focus) row */
+.form-control[disabled],
+.form-control[readonly] {
+ background-color: #e3e9ef;
+}
+/* style column */
+.editable-form .grid-static-col.bold {
+  font-weight: bold;
+  background-color: #fcf1c2;
+}
+/* style bold fields of selected (in focus) row */
+/*
+.form-control.bold {
+    color: #000;
+    font-weight: bold;
+    background-color: #f4df84;
+}
+*/
+/* make bigger search for link fields*/
+.link-field .awesomplete >ul {
+  width: 500px;
+}
