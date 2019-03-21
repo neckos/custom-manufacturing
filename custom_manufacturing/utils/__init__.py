@@ -77,6 +77,7 @@ def get_prices(self):
 						"item_parent_item_code":parent_price.item_code,\
 						"item_parent_item_name":parent_price.item_name,\
 						"item_code":'',\
+						"item_name":'',\
 						"stock_uom_parent":parent_price.stock_uom,\
 						"currency_parent":parent_price.currency,\
 						"price_list_rate_parent":parent_price.price_list_rate\
@@ -89,6 +90,7 @@ def get_prices(self):
 					"buying":item_price.buying,\
 					"selling":item_price.selling,\
 					"item_parent_item_code":'',\
+					"item_parent_item_name":'',\
 					"item_code":item_price.item_code,\
 					"item_name":item_price.item_name,\
 					"stock_uom":item_price.stock_uom,\
