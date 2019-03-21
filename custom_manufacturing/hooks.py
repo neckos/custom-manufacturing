@@ -93,7 +93,9 @@ app_include_js = "/assets/js/custom_manufacturing.js"
 
 doc_events = {
     "Item": {
-        "autoname": "custom_manufacturing.utils.custom_item_autoname"
+        "autoname": "custom_manufacturing.utils.custom_item_autoname",
+        "onload": "custom_manufacturing.utils.custom_item_onload",
+        "validate": "custom_manufacturing.utils.custom_item_onload",
     },
 }
 """

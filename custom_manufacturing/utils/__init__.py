@@ -14,6 +14,102 @@ import random
 from frappe.utils import (cint, cstr, flt, formatdate, get_timestamp, getdate, now_datetime, random_string, strip)
 from frappe.desk.reportview import get_match_cond, get_filters_cond
 
+@frappe.whitelist()
+def create_item_prices_from_parent(item_code):
+	item = frappe.get_doc('Item', item_code)
+	prices = get_prices(item)
+	for price in prices:
+		if price['item_parent_item_code'] and not price['item_code']:
+			#frappe.msgprint('Create new for:' +price['price_list'])
+			frappe.new_doc("Item Price").update({\
+				'price_list':price['price_list'],\
+				'buying':price['buying'],\
+				'selling':price['selling'],\
+				'currency':price['currency_parent'],\
+				'item_code':item.name,\
+				'item_name':item.item_name,\
+				'price_list_rate':price['price_list_rate_parent'],\
+				'stock_uom':price['stock_uom_parent']\
+			}).save()
+	return True
+
+@frappe.whitelist()
+def get_prices(self):
+	if self.name is None:
+		return {}
+	else:
+		prices = []
+		#get Item Prices:
+		filters = {"item_code": self.name}
+		prices_of_item = frappe.get_all("Item Price", "*", filters, order_by="price_list asc")
+		#get Item's Parent Prices
+		filters = {"item_code": self.parent_item}
+		prices_of_item_parent = frappe.get_all("Item Price", "*", filters, order_by="price_list asc")
+		#for each parent price check does item have item price for the same price list
+		for parent_price in prices_of_item_parent:
+			found = False
+			for count, item_price in enumerate(prices_of_item):
+				if parent_price.price_list == item_price.price_list:
+					found = True
+					prices.append({\
+						"price_list":parent_price.price_list,\
+						"buying":parent_price.buying,\
+						"selling":parent_price.selling,\
+						"item_parent_item_code":parent_price.item_code,\
+						"item_parent_item_name":parent_price.item_name,\
+						"item_code":item_price.item_code,\
+						"item_name":item_price.item_name,\
+						"stock_uom":item_price.stock_uom,\
+						"stock_uom_parent":parent_price.stock_uom,\
+						"currency":item_price.currency,\
+						"currency_parent":parent_price.currency,\
+						"price_list_rate":item_price.price_list_rate,\
+						"price_list_rate_parent":parent_price.price_list_rate\
+					})
+					prices_of_item[count]['found'] = 1 #set that this item's price was found
+					break #no need to continue for searching in prices_of_item
+			if not found:
+				prices.append({\
+					"price_list":parent_price.price_list,\
+					"buying":parent_price.buying,\
+					"selling":parent_price.selling,\
+					"item_parent_item_code":parent_price.item_code,\
+					"item_parent_item_name":parent_price.item_name,\
+					"item_code":'',\
+					"stock_uom_parent":parent_price.stock_uom,\
+					"currency_parent":parent_price.currency,\
+					"price_list_rate_parent":parent_price.price_list_rate\
+				})
+		#add prices that are set for item but not item's parent
+		for item_price in prices_of_item:
+			if not item_price.get('found', False):
+				prices.append({\
+					"price_list":item_price.price_list,\
+					"buying":item_price.buying,\
+					"selling":item_price.selling,\
+					"item_parent_item_code":'',\
+					"item_code":item_price.item_code,\
+					"item_name":item_price.item_name,\
+					"stock_uom":item_price.stock_uom,\
+					"currency":item_price.currency,\
+					"price_list_rate":item_price.price_list_rate,\
+				})
+		return prices
+		#not working: [pp for ip in item_prices for pp in parent_prices if pp.price_list == it.price_list]
+
+@frappe.whitelist()
+def custom_item_onload(doctype, event_name):
+	item_onload(doctype)
+
+@frappe.whitelist()
+def item_onload(self):
+	def load_prices(self):
+		"""Load `Item Prices` from the database"""
+		self.prices = []		
+		for item_price in get_prices(self):
+			self.append("prices", item_price)
+	if not self.get('__unsaved') and not self.get("prices"):
+		load_prices(self)
 
 @frappe.whitelist()
 def create_item_prices_from_parent_item(some, some_more):
