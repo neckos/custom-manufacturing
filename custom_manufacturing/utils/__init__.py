@@ -43,43 +43,44 @@ def get_prices(self):
 		filters = {"item_code": self.name}
 		prices_of_item = frappe.get_all("Item Price", "*", filters, order_by="price_list asc")
 		#get Item's Parent Prices
-		filters = {"item_code": self.parent_item}
-		prices_of_item_parent = frappe.get_all("Item Price", "*", filters, order_by="price_list asc")
-		#for each parent price check does item have item price for the same price list
-		for parent_price in prices_of_item_parent:
-			found = False
-			for count, item_price in enumerate(prices_of_item):
-				if parent_price.price_list == item_price.price_list:
-					found = True
+		if self.parent_item:
+			filters = {"item_code": self.parent_item}
+			prices_of_item_parent = frappe.get_all("Item Price", "*", filters, order_by="price_list asc")
+			#for each parent price check does item have item price for the same price list
+			for parent_price in prices_of_item_parent:
+				found = False
+				for count, item_price in enumerate(prices_of_item):
+					if parent_price.price_list == item_price.price_list:
+						found = True
+						prices.append({\
+							"price_list":parent_price.price_list,\
+							"buying":parent_price.buying,\
+							"selling":parent_price.selling,\
+							"item_parent_item_code":parent_price.item_code,\
+							"item_parent_item_name":parent_price.item_name,\
+							"item_code":item_price.item_code,\
+							"item_name":item_price.item_name,\
+							"stock_uom":item_price.stock_uom,\
+							"stock_uom_parent":parent_price.stock_uom,\
+							"currency":item_price.currency,\
+							"currency_parent":parent_price.currency,\
+							"price_list_rate":item_price.price_list_rate,\
+							"price_list_rate_parent":parent_price.price_list_rate\
+						})
+						prices_of_item[count]['found'] = 1 #set that this item's price was found
+						break #no need to continue for searching in prices_of_item
+				if not found:
 					prices.append({\
 						"price_list":parent_price.price_list,\
 						"buying":parent_price.buying,\
 						"selling":parent_price.selling,\
 						"item_parent_item_code":parent_price.item_code,\
 						"item_parent_item_name":parent_price.item_name,\
-						"item_code":item_price.item_code,\
-						"item_name":item_price.item_name,\
-						"stock_uom":item_price.stock_uom,\
+						"item_code":'',\
 						"stock_uom_parent":parent_price.stock_uom,\
-						"currency":item_price.currency,\
 						"currency_parent":parent_price.currency,\
-						"price_list_rate":item_price.price_list_rate,\
 						"price_list_rate_parent":parent_price.price_list_rate\
 					})
-					prices_of_item[count]['found'] = 1 #set that this item's price was found
-					break #no need to continue for searching in prices_of_item
-			if not found:
-				prices.append({\
-					"price_list":parent_price.price_list,\
-					"buying":parent_price.buying,\
-					"selling":parent_price.selling,\
-					"item_parent_item_code":parent_price.item_code,\
-					"item_parent_item_name":parent_price.item_name,\
-					"item_code":'',\
-					"stock_uom_parent":parent_price.stock_uom,\
-					"currency_parent":parent_price.currency,\
-					"price_list_rate_parent":parent_price.price_list_rate\
-				})
 		#add prices that are set for item but not item's parent
 		for item_price in prices_of_item:
 			if not item_price.get('found', False):
