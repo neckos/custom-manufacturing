@@ -20,7 +20,7 @@ app_include_css = "/assets/custom_manufacturing/css/custom_manufacturing.css"
 
 app_include_js = "/assets/js/custom_manufacturing.js"
 
-app_include_js = "/assets/custom_manufacturing/js/multi_select_dialog_customized.js"
+#app_include_js = "/assets/custom_manufacturing/js/multi_select_dialog_customized.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/custom_manufacturing/css/custom_manufacturing.css"

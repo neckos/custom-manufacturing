@@ -7,6 +7,7 @@
 	     "public/js/treeview_modul.js",
 	     "public/js/custom_form_footer.js",
 	     "public/js/document_ready.js",
-	     "public/js/custom_form_dashboard.js"
+	     "public/js/custom_form_dashboard.js",
+	     "multi_select_dialog_customized.js",		 
 	]	
 }
