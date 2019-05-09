@@ -268,23 +268,23 @@ def get_columns():
 		{"label": _("Item"), "fieldname": "item_code", "width": 100}, # "fieldtype": "Link", "options": "Item",
 		{"label": _("Item Name"), "fieldname": "item_name", "width": 150},
 		{"label": _("Item Group"), "fieldname": "item_group", "fieldtype": "Link", "options": "Item Group", "width": 100},
-		{"label": _("Brand"), "fieldname": "brand", "fieldtype": "Link", "options": "Brand", "width": 90},
-		{"label": _("Description"), "fieldname": "description", "width": 140},
+		#{"label": _("Brand"), "fieldname": "brand", "fieldtype": "Link", "options": "Brand", "width": 90},
+		#{"label": _("Description"), "fieldname": "description", "width": 140},
 		{"label": _("Parent Code"), "fieldname": "item_parent_code", "width": 100},
 		{"label": _("Parent Name"), "fieldname": "item_parent_name", "width": 140},
 		{"label": _("Warehouse"), "fieldname": "warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 100},
 		{"label": _("Stock UOM"), "fieldname": "stock_uom", "fieldtype": "Link", "options": "UOM", "width": 90},
-		{"label": _("Opening Qty"), "fieldname": "opening_qty", "fieldtype": "Float", "width": 100}, #, "convertible": "qty"
-		{"label": _("Opening Value"), "fieldname": "opening_val", "fieldtype": "Float", "width": 110},
-		{"label": _("In Qty"), "fieldname": "in_qty", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
-		{"label": _("In Value"), "fieldname": "in_val", "fieldtype": "Float", "width": 80},
-		{"label": _("Out Qty"), "fieldname": "out_qty", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
-		{"label": _("Out Value"), "fieldname": "out_val", "fieldtype": "Float", "width": 80},
+		#{"label": _("Opening Qty"), "fieldname": "opening_qty", "fieldtype": "Float", "width": 100}, #, "convertible": "qty"
+		#{"label": _("Opening Value"), "fieldname": "opening_val", "fieldtype": "Float", "width": 110},
+		#{"label": _("In Qty"), "fieldname": "in_qty", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
+		#{"label": _("In Value"), "fieldname": "in_val", "fieldtype": "Float", "width": 80},
+		#{"label": _("Out Qty"), "fieldname": "out_qty", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
+		#{"label": _("Out Value"), "fieldname": "out_val", "fieldtype": "Float", "width": 80},
 		{"label": _("Balance Qty"), "fieldname": "bal_qty", "fieldtype": "Float", "width": 100, "convertible": "qty"}, #
 		{"label": _("Balance Value"), "fieldname": "bal_val", "fieldtype": "Currency", "width": 100},
 		{"label": _("Valuation Rate"), "fieldname": "val_rate", "fieldtype": "Currency", "width": 90}, #, "convertible": "rate"
-		{"label": _("Reorder Level"), "fieldname": "reorder_level", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
-		{"label": _("Reorder Qty"), "fieldname": "reorder_qty", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
+		#{"label": _("Reorder Level"), "fieldname": "reorder_level", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
+		#{"label": _("Reorder Qty"), "fieldname": "reorder_qty", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
 		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 100}
 	]
 	#convertible - is used to convert value in another UOM
@@ -527,6 +527,7 @@ def update_included_uom_in_report(columns, result, include_uom, conversion_facto
 	for col_idx in reversed(range(0, len(columns))):
 		col = columns[col_idx]
 		if isinstance(col, dict) and col.get("convertible") in ['rate', 'qty']:
+			show_conversion_factor_col = True
 			#add to columns:
 			#convertible_cols[col_idx] = col['convertible']
 			columns.insert(col_idx+1, col.copy())
@@ -538,6 +539,8 @@ def update_included_uom_in_report(columns, result, include_uom, conversion_facto
 				columns[col_idx+1]['label'] += " ({})".format(include_uom)
 			#note which columns (by fieldname) are convertible:
 			convertible_cols[col['fieldname']] = col["convertible"]
+	if show_conversion_factor_col:
+		columns.append({'fieldname':'conversion_factor', 'label': 'Conversion Factor', 'width':50})
 
 	#print('columns:')
 	#pp.pprint(columns)
@@ -557,6 +560,7 @@ def update_included_uom_in_report(columns, result, include_uom, conversion_facto
 			#print(value)
 			if convertible_cols.get(key): #if col is convertible
 				if row['conversion_factor']: #if item has conversion factor for uom then do maths
+					show_conversion_factor_value = True
 					if convertible_cols[key] == 'rate':
 						temp_dic[key+'_alt'] = flt(value) *row['conversion_factor']
 					else:# (if is qty)
@@ -565,6 +569,8 @@ def update_included_uom_in_report(columns, result, include_uom, conversion_facto
 					temp_dic[key+'_alt'] = 0.00
 		#print(temp_dic)
 		result[row_idx].update(temp_dic)
+		#if show_conversion_factor_col:
+		#	result[row_idx][]
 	#print('result:')
 	#pp.pprint(result)
 
