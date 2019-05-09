@@ -256,10 +256,9 @@ def execute(filters=None):
 			'conversion_factor': d[21], \
 		})
 
-	#ToDo: check what does this do exactly:
+	#if is seleceted other uom in filter then add columns and recalculated data (customized!)
 	update_included_uom_in_report(columns, list_of_dicts, include_uom, conversion_factors)
 
-	#temp: filter which columns to show return_list_of_dicts = {key:d[key] for key in ['item_code', 'item_name', 'item_group', ]}
 	return columns, list_of_dicts #data
 
 
@@ -517,11 +516,13 @@ def get_item_reorder_details(items):
 	return dict((d.parent + d.warehouse, d) for d in item_reorder_details)
 
 #copied from v11's, v12's stock.utils.py
+#original version was rewritten as we are using dictionary for data not list
 def update_included_uom_in_report(columns, result, include_uom, conversion_factors):
-	print('update_included_uom_in_report')
+
 	if not include_uom: # or not conversion_factors:
 		return
 
+	#HANDLE COLUMNS:
 	#add extra columns for each column which should be converted
 	convertible_cols = {}
 	for col_idx in reversed(range(0, len(columns))):
@@ -540,24 +541,15 @@ def update_included_uom_in_report(columns, result, include_uom, conversion_facto
 			#note which columns (by fieldname) are convertible:
 			convertible_cols[col['fieldname']] = col["convertible"]
 	if show_conversion_factor_col:
-		columns.append({'fieldname':'conversion_factor', 'label': 'Conversion Factor', 'width':50})
+		#columns.append({'fieldname':'conversion_factor', 'label': 'Conversion Factor ({})'.format(include_uom)})
+		columns.insert(8, {'fieldname':'conversion_factor', 'label': 'Conversion Factor ({})'.format(include_uom)})
 
-	#print('columns:')
-	#pp.pprint(columns)
-	#print('convertible_cols:')
-	#pp.pprint(convertible_cols)
-	#print('conversion_factors:')
-	#pp.pprint(conversion_factors)
-    
+	#HANDLE DATA:
 	#for each rows each column create convertible value if needed:
 	for row_idx, row in enumerate(result):
 		#check which columns is convertible to uom:
-		#print('row:')
-		#pp.pprint(row)
 		temp_dic = {}
 		for key, value in row.items():
-			#print(key)
-			#print(value)
 			if convertible_cols.get(key): #if col is convertible
 				if row['conversion_factor']: #if item has conversion factor for uom then do maths
 					show_conversion_factor_value = True
@@ -567,12 +559,7 @@ def update_included_uom_in_report(columns, result, include_uom, conversion_facto
 						temp_dic[key+'_alt'] = flt(value)/row['conversion_factor']
 				else: #if no conversion factor then fill with zero
 					temp_dic[key+'_alt'] = 0.00
-		#print(temp_dic)
 		result[row_idx].update(temp_dic)
-		#if show_conversion_factor_col:
-		#	result[row_idx][]
-	#print('result:')
-	#pp.pprint(result)
 
 	"""
 	for row_idx, row in enumerate(result):
@@ -596,4 +583,3 @@ def update_included_uom_in_report(columns, result, include_uom, conversion_facto
 		print('new_row:')
 		pp.pprint(new_row)
 	"""
-	#return result
