@@ -19,6 +19,7 @@ def create_item_prices_from_parent(item_code):
 	item = frappe.get_doc('Item', item_code)
 	prices = get_prices(item)
 	for price in prices:
+		#create new prices only for records if is price for parent-item and not for child-item:
 		if price['item_parent_item_code'] and not price['item_code']:
 			#frappe.msgprint('Create new for:' +price['price_list'])
 			frappe.new_doc("Item Price").update({\

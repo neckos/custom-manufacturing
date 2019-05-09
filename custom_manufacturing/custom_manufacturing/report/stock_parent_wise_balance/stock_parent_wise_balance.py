@@ -8,27 +8,37 @@ from erpnext.stock.report.stock_ledger.stock_ledger import get_item_group_condit
 from six import iteritems
 import pprint
 
+#Copied from stock_balance.py
+#Data is build from Stock Ledger Entries
+#Then data is grouped by Company + Warehouse
+#Then add to data information - item details from Item and UOM Conversion Details
+#Then add to data reorder information from Item Reorder
+#Variant attributes if exist are added as columns. Not tested
+
+
+pp = pprint.PrettyPrinter(indent=4)
+
 def execute(filters=None):
-	pp = pprint.PrettyPrinter(indent=4)
+
 	if not filters: filters = {}
 
 	#if item or warehouse not selected then select all from `tabStock Ledger Entry` (up to 500'000 records)
 	validate_filters(filters)
 
-	#? allow to filter by differen uom ?
+	#filter by different uom (and later add column with qty in this uom)
 	include_uom = filters.get("include_uom")
 
 	columns = get_columns()
 
 	#filter (if set) by - items by item_code, item_brand, item_group:
 	items = get_items(filters)
-	print('items:')
-	pp.pprint(items)
+	#print('items:')
+	#pp.pprint(items)
 	#get stock ledger entries by items and filters
 	#!!!! Add here sum by parent?
 	sle = get_stock_ledger_entries(filters, items)
-	print('sle:')
-	pp.pprint(sle)
+	#print('sle:')
+	#pp.pprint(sle)
 
 	# if no stock ledger entry found return
 	if not sle:
@@ -36,14 +46,14 @@ def execute(filters=None):
 
 	#get value for each item in companys warehouse iwb_map = {('T', 'Ārsiena - Māja', 'Finished Goods - T'):{'bal_qty': 130.0, 'bal_val': 7800.0,'in_qty': 130.0,'in_val': 7800.0,'opening_qty': 0.0,'opening_val': 0.0,'out_qty': 0.0,'out_val': 0.0,'val_rate': 60.0}}
 	iwb_map = get_item_warehouse_map(filters, sle)
-	print('iwb_map:')
-	pp.pprint(iwb_map)
+	#print('iwb_map:')
+	#pp.pprint(iwb_map)
 
 	#get item details: item.name, item.item_name, item.description, item.item_group, item.brand, item.stock_uom, ucd.conversion_factor (if asked) .. and variant attribute values (if asked)
 	#example: {'Ārsiena - Māja': {'brand': None,'description': 'Ārsiena - Māja','item_group': 'Products','item_name': 'Ārsiena - Māja','name': 'Ārsiena - Māja','stock_uom': 'm2'}}
 	item_map = get_item_details(items, sle, filters)
-	print('item_map:')
-	pp.pprint(item_map)
+	#print('item_map:')
+	#pp.pprint(item_map)
 
 	#take reorder levels from `tabItem Reorder`
 	#example: (keys??? item_code+warehouse)
@@ -67,8 +77,8 @@ def execute(filters=None):
 	"""
 
 	item_reorder_detail_map = get_item_reorder_details(item_map.keys())
-	print('item_reorder_detail_map:')
-	pp.pprint(item_reorder_detail_map)
+	#print('item_reorder_detail_map:')
+	#pp.pprint(item_reorder_detail_map)
 
 
 	data = []
@@ -87,7 +97,9 @@ def execute(filters=None):
 			if item + warehouse in item_reorder_detail_map:
 				item_reorder_level = item_reorder_detail_map[item + warehouse]["warehouse_reorder_level"]
 				item_reorder_qty = item_reorder_detail_map[item + warehouse]["warehouse_reorder_qty"]
-
+			
+			conversion_factor = item_map[item].conversion_factor if include_uom else 0
+			
 			report_data = [item, item_map[item]["item_name"],
 				item_map[item]["item_group"],
 				item_map[item]["brand"],
@@ -102,9 +114,11 @@ def execute(filters=None):
 				qty_dict.bal_val, qty_dict.val_rate,
 				item_reorder_level,
 				item_reorder_qty,
-				company
+				company,
+				conversion_factor
 			]
 
+			#CUSTOMIZED: To sum values by parents
 			#if has parent then set/ sum values
 			if item_map[item]["item_parent_code"]:
 				#key = (company, item_map[item]["item_parent_code"], warehouse)
@@ -143,8 +157,10 @@ def execute(filters=None):
 					'reorder_level': '', \
 					'reorder_qty': '', \
 					'company': company, \
+					'conversion_factor': 0, \
 					'indent': 0, \
-					}) 
+					})
+					#parent has no conversion factor (?)
 			"""
 			#if has parent then set/ sum values
 			if item_map[item]["item_parent_code"]:
@@ -190,25 +206,25 @@ def execute(filters=None):
 				variants_attributes = get_variants_attributes()
 				report_data += [item_map[item].get(i) for i in variants_attributes]
 
-			if include_uom:
-				conversion_factors.append(item_map[item].conversion_factor)
-			print('report_data:')
-			pp.pprint(report_data)
+			#if include_uom:
+			#	conversion_factors.append(item_map[item].conversion_factor)
+			#print('report_data:')
+			#pp.pprint(report_data)
 			data.append(report_data)
 
 	if filters.get('show_variant_attributes', 0) == 1:
 		columns += ["{}:Data:100".format(i) for i in get_variants_attributes()]
 
-	#ToDo: check what does this do exactly:
-	update_included_uom_in_report(columns, data, include_uom, conversion_factors)
 
-	print('parents_dict:')
-	pp.pprint(parents_dict)
+	#print('parents_dict:')
+	#pp.pprint(parents_dict)
 
-	print('---data:')
+	#CUSTOMIZED: Stick in parent information between (before) children records
+	
 	list_of_dicts = []
+	#print('---data:')
 	for d in data:
-		print(d)
+		#print(d)
 		#key = (d[20], d[5], d[7]) #(company, item_parent_code, warehouse)
 		key = (d[20], d[7], d[5]) #(company, item_parent_code, warehouse)
 		if d[5] and parents_dict.get(key):#if has parent and parent's information is still in parents_dict (has not yet popped out)
@@ -237,10 +253,13 @@ def execute(filters=None):
 			'reorder_level': d[18], \
 			'reorder_qty': d[19], \
 			'company': d[20], \
-			'indent': indent, \
+			'conversion_factor': d[21], \
 		})
 
+	#ToDo: check what does this do exactly:
+	update_included_uom_in_report(columns, list_of_dicts, include_uom, conversion_factors)
 
+	#temp: filter which columns to show return_list_of_dicts = {key:d[key] for key in ['item_code', 'item_name', 'item_group', ]}
 	return columns, list_of_dicts #data
 
 
@@ -249,25 +268,26 @@ def get_columns():
 		{"label": _("Item"), "fieldname": "item_code", "width": 100}, # "fieldtype": "Link", "options": "Item",
 		{"label": _("Item Name"), "fieldname": "item_name", "width": 150},
 		{"label": _("Item Group"), "fieldname": "item_group", "fieldtype": "Link", "options": "Item Group", "width": 100},
-		#{"label": _("Brand"), "fieldname": "brand", "fieldtype": "Link", "options": "Brand", "width": 90},
-		#{"label": _("Description"), "fieldname": "description", "width": 140},
-		#{"label": _("Parent Code"), "fieldname": "item_parent_code", "width": 100},
-		#{"label": _("Parent Name"), "fieldname": "item_parent_name", "width": 140},
+		{"label": _("Brand"), "fieldname": "brand", "fieldtype": "Link", "options": "Brand", "width": 90},
+		{"label": _("Description"), "fieldname": "description", "width": 140},
+		{"label": _("Parent Code"), "fieldname": "item_parent_code", "width": 100},
+		{"label": _("Parent Name"), "fieldname": "item_parent_name", "width": 140},
 		{"label": _("Warehouse"), "fieldname": "warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 100},
 		{"label": _("Stock UOM"), "fieldname": "stock_uom", "fieldtype": "Link", "options": "UOM", "width": 90},
-		{"label": _("Opening Qty"), "fieldname": "opening_qty", "fieldtype": "Float", "width": 100, "convertible": "qty"},
+		{"label": _("Opening Qty"), "fieldname": "opening_qty", "fieldtype": "Float", "width": 100}, #, "convertible": "qty"
 		{"label": _("Opening Value"), "fieldname": "opening_val", "fieldtype": "Float", "width": 110},
-		{"label": _("In Qty"), "fieldname": "in_qty", "fieldtype": "Float", "width": 80, "convertible": "qty"},
+		{"label": _("In Qty"), "fieldname": "in_qty", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
 		{"label": _("In Value"), "fieldname": "in_val", "fieldtype": "Float", "width": 80},
-		{"label": _("Out Qty"), "fieldname": "out_qty", "fieldtype": "Float", "width": 80, "conversion_factortible": "qty"},
+		{"label": _("Out Qty"), "fieldname": "out_qty", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
 		{"label": _("Out Value"), "fieldname": "out_val", "fieldtype": "Float", "width": 80},
-		{"label": _("Balance Qty"), "fieldname": "bal_qty", "fieldtype": "Float", "width": 100, "convertible": "qty"},
+		{"label": _("Balance Qty"), "fieldname": "bal_qty", "fieldtype": "Float", "width": 100, "convertible": "qty"}, #
 		{"label": _("Balance Value"), "fieldname": "bal_val", "fieldtype": "Currency", "width": 100},
-		{"label": _("Valuation Rate"), "fieldname": "val_rate", "fieldtype": "Currency", "width": 90, "convertible": "rate"},
-		{"label": _("Reorder Level"), "fieldname": "reorder_level", "fieldtype": "Float", "width": 80, "convertible": "qty"},
-		{"label": _("Reorder Qty"), "fieldname": "reorder_qty", "fieldtype": "Float", "width": 80, "convertible": "qty"},
+		{"label": _("Valuation Rate"), "fieldname": "val_rate", "fieldtype": "Currency", "width": 90}, #, "convertible": "rate"
+		{"label": _("Reorder Level"), "fieldname": "reorder_level", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
+		{"label": _("Reorder Qty"), "fieldname": "reorder_qty", "fieldtype": "Float", "width": 80}, #, "convertible": "qty"
 		{"label": _("Company"), "fieldname": "company", "fieldtype": "Link", "options": "Company", "width": 100}
 	]
+	#convertible - is used to convert value in another UOM
 
 	"""
 	columns = [{
@@ -412,9 +432,9 @@ def get_item_warehouse_map(filters, sle):
 		qty_dict.val_rate = d.valuation_rate
 		qty_dict.bal_qty += qty_diff
 		qty_dict.bal_val += value_diff
-	print('iwb_map before sorted:')
-	pp = pprint.PrettyPrinter(indent=4)
-	pp.pprint(iwb_map)
+	#print('iwb_map before sorted:')
+	#pp = pprint.PrettyPrinter(indent=4)
+	#pp.pprint(iwb_map)
 	iwb_map = filter_items_with_no_transactions(iwb_map)
 
 	return iwb_map
@@ -498,27 +518,67 @@ def get_item_reorder_details(items):
 
 #copied from v11's, v12's stock.utils.py
 def update_included_uom_in_report(columns, result, include_uom, conversion_factors):
-	if not include_uom or not conversion_factors:
+	print('update_included_uom_in_report')
+	if not include_uom: # or not conversion_factors:
 		return
 
+	#add extra columns for each column which should be converted
 	convertible_cols = {}
 	for col_idx in reversed(range(0, len(columns))):
 		col = columns[col_idx]
 		if isinstance(col, dict) and col.get("convertible") in ['rate', 'qty']:
-			convertible_cols[col_idx] = col['convertible']
+			#add to columns:
+			#convertible_cols[col_idx] = col['convertible']
 			columns.insert(col_idx+1, col.copy())
 			columns[col_idx+1]['fieldname'] += "_alt"
-			if convertible_cols[col_idx] == 'rate':
+			#if convertible_cols[col_idx] == 'rate':
+			if col["convertible"] == 'rate':
 				columns[col_idx+1]['label'] += " (per {})".format(include_uom)
 			else:
 				columns[col_idx+1]['label'] += " ({})".format(include_uom)
+			#note which columns (by fieldname) are convertible:
+			convertible_cols[col['fieldname']] = col["convertible"]
 
+	#print('columns:')
+	#pp.pprint(columns)
+	#print('convertible_cols:')
+	#pp.pprint(convertible_cols)
+	#print('conversion_factors:')
+	#pp.pprint(conversion_factors)
+    
+	#for each rows each column create convertible value if needed:
 	for row_idx, row in enumerate(result):
+		#check which columns is convertible to uom:
+		#print('row:')
+		#pp.pprint(row)
+		temp_dic = {}
+		for key, value in row.items():
+			#print(key)
+			#print(value)
+			if convertible_cols.get(key): #if col is convertible
+				if row['conversion_factor']: #if item has conversion factor for uom then do maths
+					if convertible_cols[key] == 'rate':
+						temp_dic[key+'_alt'] = flt(value) *row['conversion_factor']
+					else:# (if is qty)
+						temp_dic[key+'_alt'] = flt(value)/row['conversion_factor']
+				else: #if no conversion factor then fill with zero
+					temp_dic[key+'_alt'] = 0.00
+		#print(temp_dic)
+		result[row_idx].update(temp_dic)
+	#print('result:')
+	#pp.pprint(result)
+
+	"""
+	for row_idx, row in enumerate(result):
+		print('row:')
+		pp.pprint(row)
 		new_row = []
 		for col_idx, d in enumerate(row):
+			print('d:')
+			pp.pprint(d)
 			new_row.append(d)
-			if col_idx in convertible_cols:
-				if conversion_factors[row_idx]:
+			if col_idx in convertible_cols: #if current data is in column which was detected as convertible
+				if conversion_factors[row_idx]: #if current row has conversion factor
 					if convertible_cols[col_idx] == 'rate':
 						new_row.append(flt(d) * conversion_factors[row_idx])
 					else:
@@ -527,3 +587,7 @@ def update_included_uom_in_report(columns, result, include_uom, conversion_facto
 					new_row.append(None)
 
 		result[row_idx] = new_row
+		print('new_row:')
+		pp.pprint(new_row)
+	"""
+	#return result

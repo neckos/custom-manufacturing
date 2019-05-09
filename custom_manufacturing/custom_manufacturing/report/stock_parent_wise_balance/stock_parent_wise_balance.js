@@ -27,12 +27,14 @@ frappe.query_reports["Stock Parent Wise Balance"] = {
 			"width": "80",
 			"options": "Item Group"
 		},
-		{
+		/*{
 			"fieldname":"brand",
 			"label": __("Brand"),
 			"fieldtype": "Link",
 			"options": "Brand"
 		},
+		*/
+		/*
 		{
 			"fieldname": "item_code",
 			"label": __("Item"),
@@ -45,6 +47,7 @@ frappe.query_reports["Stock Parent Wise Balance"] = {
 				}
 			}
 		},
+		*/
 		{
 			"fieldname": "warehouse",
 			"label": __("Warehouse"),
@@ -58,44 +61,59 @@ frappe.query_reports["Stock Parent Wise Balance"] = {
 			"fieldtype": "Link",
 			"options": "UOM"
 		},
-		{
+		
+		/*{
 			"fieldname": "show_variant_attributes",
 			"label": __("Show Variant Attributes"),
 			"fieldtype": "Check"
 		},
+		*/
 	],
-	
-	"formatter": function(value, row, column, data, default_formatter) {
-		if (column.fieldname=="account") {
-			value = data.account_name;
-
-			column.link_onclick =
-				"erpnext.financial_statements.open_general_ledger(" + JSON.stringify(data) + ")";
-			column.is_tree = true;
+	//for v9 (in v10 is used datables!?)
+	"formatter": function(row, cell, value, columnDef, dataContext, default_formatter) {
+		/*
+		console.log('row');
+		console.log(row);
+		console.log('cell');
+		console.log(cell);
+		console.log('columnDef');
+		console.log(columnDef);
+		console.log('dataContext');
+		console.log(dataContext);
+		console.log('value');
+		console.log(value);	
+		*/
+		if (columnDef.df.fieldname=="item_code") {
+			value = dataContext.item_code;
+			columnDef.df.is_tree = true;
 		}
 
-		value = default_formatter(value, row, column, data);
+		value = default_formatter(row, cell, value, columnDef, dataContext);
 
-		if (!data.parent_account) {
-			value = $(`<span>${value}</span>`);
-
+		/*
+		if (!dataContext.parent_account && dataContext.based_on != 'project') {
 			var $value = $(value).css("font-weight", "bold");
-			if (data.warn_if_negative && data[column.fieldname] < 0) {
+			if (dataContext.warn_if_negative && dataContext[columnDef.df.fieldname] < 0) {
 				$value.addClass("text-danger");
 			}
 
 			value = $value.wrap("<p></p>").parent().html();
 		}
+		
+		*/
 
+		if (!dataContext.item_parent_code) {
+		   value = `<span style='color:black!important;font-weight:bold'>${value}</span>`;
+		}
+		
 		return value;
 	},
 
-	/*
 	"tree": true,
 	"name_field": "item_code",
 	"parent_field": "item_parent_code",
 	"initial_depth": 1,
-	*/
+	
 	onload: function(report) {
 
 	}
